@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using VeseetaProject.Data;
+
 namespace VeseetaProject.API
 {
     public class Program
@@ -10,6 +13,12 @@ namespace VeseetaProject.API
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+              options.UseSqlServer(
+                  builder.Configuration.GetConnectionString("DefaultConnection"),
+                  b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName))
+         );
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
