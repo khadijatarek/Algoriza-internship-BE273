@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace VeseetaProject.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Configure
             builder.ApplyConfiguration(new ApplicationUserConfiguration());
             builder.ApplyConfiguration(new DoctorConfiguration());
             builder.ApplyConfiguration(new AppointmentConfiguration());
@@ -36,7 +38,13 @@ namespace VeseetaProject.Data
             builder.ApplyConfiguration(new BookingConfiguration());
             builder.ApplyConfiguration(new CouponConfiguration());
 
+            //Seed Data 
+            DataSeeder.SeedSpecializations(builder);
+          
+            
             base.OnModelCreating(builder);
+
+
         }
 
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VeseetaProject.Data;
 
@@ -11,9 +12,11 @@ using VeseetaProject.Data;
 namespace VeseetaProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231129210048_allowNull")]
+    partial class allowNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,9 +309,6 @@ namespace VeseetaProject.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
@@ -373,62 +373,6 @@ namespace VeseetaProject.Data.Migrations
                     b.HasKey("SpecializationId");
 
                     b.ToTable("Specializations");
-
-                    b.HasData(
-                        new
-                        {
-                            SpecializationId = 1,
-                            NameAr = "طبيب أسنان",
-                            NameEn = "Dentist"
-                        },
-                        new
-                        {
-                            SpecializationId = 2,
-                            NameAr = "أخصائي قلب",
-                            NameEn = "Cardiologist"
-                        },
-                        new
-                        {
-                            SpecializationId = 3,
-                            NameAr = "أخصائي جلدية",
-                            NameEn = "Dermatologist"
-                        },
-                        new
-                        {
-                            SpecializationId = 4,
-                            NameAr = "طبيب أطفال",
-                            NameEn = "Pediatrician"
-                        },
-                        new
-                        {
-                            SpecializationId = 5,
-                            NameAr = "جراح عظام",
-                            NameEn = "Orthopedic Surgeon"
-                        },
-                        new
-                        {
-                            SpecializationId = 6,
-                            NameAr = "أخصائي أعصاب",
-                            NameEn = "Neurologist"
-                        },
-                        new
-                        {
-                            SpecializationId = 7,
-                            NameAr = "طبيب نسائي",
-                            NameEn = "Gynecologist"
-                        },
-                        new
-                        {
-                            SpecializationId = 8,
-                            NameAr = "طبيب نفسي",
-                            NameEn = "Psychiatrist"
-                        },
-                        new
-                        {
-                            SpecializationId = 9,
-                            NameAr = "طبيب عيون",
-                            NameEn = "Ophthalmologist"
-                        });
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Time", b =>

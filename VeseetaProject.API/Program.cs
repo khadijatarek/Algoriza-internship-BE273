@@ -1,5 +1,8 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using VeseetaProject.Core.Models;
+using VeseetaProject.Core.Repositories;
 using VeseetaProject.Data;
 
 namespace VeseetaProject.API
@@ -17,8 +20,18 @@ namespace VeseetaProject.API
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
               options.UseSqlServer(
                   builder.Configuration.GetConnectionString("DefaultConnection"),
-                  b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName))
-         );
+                  b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                //options.Password.RequiredLength = 8;
+                //options.Password.RequiredUniqueChars = 3;
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
+
+
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
