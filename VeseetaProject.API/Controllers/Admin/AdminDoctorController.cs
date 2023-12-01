@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VeseetaProject.Core.DTOs;
 using VeseetaProject.Core.Models;
 using VeseetaProject.Core.Services;
+using VeseetaProject.Services;
 
 namespace VeseetaProject.API.Controllers.Admin
 {
@@ -11,11 +12,29 @@ namespace VeseetaProject.API.Controllers.Admin
     public class AdminDoctorController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IDoctorService _doctorService;
 
-        public AdminDoctorController(IAuthService authService)
+        public AdminDoctorController(IAuthService authService, IDoctorService DoctorService)
         {
             _authService = authService;
+            _doctorService = DoctorService;
         }
+        [HttpGet("Get All Doctors")]
+
+
+        public async Task<IActionResult> getAllDoctors()
+        {
+            return Ok(await _doctorService.GetAllDoctors());
+        }
+
+
+        //[HttpGet("Get Doctor By Id")]
+        //public async Task<IActionResult> getDoctor([FromRoute]int id)
+        //{
+        //    return Ok(await _doctorService.GetDoctorById(id));
+        //}
+
+
         [HttpPost("AddDoctor")]
         public async Task<IActionResult> AddDoctor(DoctorRegisterDTO registerDTO)
         {
