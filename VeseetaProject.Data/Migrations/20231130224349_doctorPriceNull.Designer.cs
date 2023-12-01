@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VeseetaProject.Data;
 
@@ -11,9 +12,11 @@ using VeseetaProject.Data;
 namespace VeseetaProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231130224349_doctorPriceNull")]
+    partial class doctorPriceNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,7 +260,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Booking", b =>
@@ -291,7 +294,7 @@ namespace VeseetaProject.Data.Migrations
                     b.HasIndex("TimeId")
                         .IsUnique();
 
-                    b.ToTable("Bookings", (string)null);
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Coupon", b =>
@@ -324,7 +327,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasKey("CouponId");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Doctor", b =>
@@ -351,7 +354,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Specialization", b =>
@@ -372,7 +375,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasKey("SpecializationId");
 
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
 
                     b.HasData(
                         new
@@ -450,7 +453,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Times", (string)null);
+                    b.ToTable("Times");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

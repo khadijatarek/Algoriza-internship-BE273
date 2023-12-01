@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VeseetaProject.Core.Models;
 using VeseetaProject.Core.Repositories;
+using VeseetaProject.Core.Services;
 using VeseetaProject.Data;
+using VeseetaProject.Services;
 
 namespace VeseetaProject.API
 {
@@ -27,8 +29,11 @@ namespace VeseetaProject.API
                 //options.Password.RequiredLength = 8;
                 //options.Password.RequiredUniqueChars = 3;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
 
+            builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<IDoctorService, DoctorService>();
+            builder.Services.AddTransient<IDashboardService, DashboardService>();
 
 
 

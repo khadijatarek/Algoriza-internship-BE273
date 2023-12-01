@@ -11,7 +11,7 @@ namespace VeseetaProject.Core.Models
     {
         [Key]
         public int DoctorId { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
         //one to one relationship
         public string UserId { get; set; }

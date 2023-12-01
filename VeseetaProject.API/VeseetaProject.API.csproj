@@ -17,10 +17,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VeseetaProject.Data\VeseetaProject.Data.csproj" />
+    <ProjectReference Include="..\VeseetaProject.Services\VeseetaProject.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Controllers\Doctor\" />
   </ItemGroup>
 
 </Project>

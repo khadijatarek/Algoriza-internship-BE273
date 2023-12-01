@@ -13,13 +13,20 @@ namespace VeseetaProject.Data
     {
         private readonly ApplicationDbContext _context;
         public IBaseRepository<Specialization> Specializations { get;}
-       
-        
+        public IBaseRepository<ApplicationUser> Users { get;}
+        public IBaseRepository<Doctor> Doctors { get; }
+        public IBaseRepository<Appointment> Appointments { get; }
+        public IBaseRepository<Booking> Bookings { get; }
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context =context;
 
             Specializations = new BaseRepository<Specialization>(context);
+            Users = new BaseRepository<ApplicationUser>(context);
+            Doctors = new BaseRepository<Doctor>(context);
+            Appointments = new BaseRepository<Appointment>(context);
+            Bookings = new BaseRepository<Booking>(context);
         }
 
         public int Complete()
