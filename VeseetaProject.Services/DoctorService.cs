@@ -34,23 +34,86 @@ namespace VeseetaProject.Services
                 Gender = d.User.Gender
             });
         }
-        public async Task<DoctorDetailsDTO> GetDoctorById(int id)
+        //public async Task<DoctorDetailsDTO> GetDoctorById(int id)
+        //{
+
+        //    var doctor = await _unitOfWork.Doctors.GetById(id);
+        //    DoctorDetailsDTO d = new DoctorDetailsDTO {
+        //        Email = doctor.User.Email,
+        //        Image = doctor.User.Image,
+        //        FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
+        //        Phone = doctor.User.PhoneNumber,
+        //        Specialization = doctor.Specialization.NameEn,
+        //        Gender = doctor.User.Gender
+        //    };
+        //    return d;
+
+        //    throw new NotImplementedException();
+            
+        //    //var doctor = await _unitOfWork.Doctors.GetById(id);
+        //    //DoctorDetailsDTO d = new DoctorDetailsDTO {
+        //    //    Email = doctor.User.Email,
+        //    //    Image = doctor.User.Image,
+        //    //    FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
+        //    //    Phone = doctor.User.PhoneNumber,
+        //    //    Specialization = doctor.Specialization.NameEn,
+        //    //    Gender = doctor.User.Gender
+        //    //};
+            
+        //    //return d;
+        //}
+
+        public async Task<Doctor> GetDoctor_ById(int id)
         {
-            
-            throw new NotImplementedException();
-            
-            //var doctor = await _unitOfWork.Doctors.GetById(id);
-            //DoctorDetailsDTO d = new DoctorDetailsDTO {
-            //    Email = doctor.User.Email,
-            //    Image = doctor.User.Image,
-            //    FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
-            //    Phone = doctor.User.PhoneNumber,
-            //    Specialization = doctor.Specialization.NameEn,
-            //    Gender = doctor.User.Gender
-            //};
-            
-            //return d;
+            return await _unitOfWork.Doctors.GetById(id);
+
         }
 
+        public async Task<IEnumerable<Appointment>> AddAppointment(int doctorId, AppointmentDTO appointmentDTO)
+        {
+            try
+            {
+                var doctor = await _unitOfWork.Doctors.GetById(doctorId);
+                if (doctor == null)
+                {
+                    return null;
+                }
+                List<Appointment> appointments = appointmentDTO.Appointments.Select(appointmentSlot =>
+                new Appointment
+                {
+                    DoctorId = doctorId,
+                    Day = MapStringToDay(appointmentSlot.Day), 
+                    Times= appointmentSlot.Times.Select(timeString =>
+                    new Time
+                    {
+                        time = timeString,
+                    }
+                    ).ToList(),
+                }
+                ).ToList();
+                var result =await _unitOfWork.Appointments.AddRange(appointments);
+                if (appointmentDTO.Price.HasValue)
+                {
+                    doctor.Price = appointmentDTO.Price;
+                }
+                _unitOfWork.Complete();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        private Days MapStringToDay(string dayString)
+        {
+            if (Enum.TryParse<Days>(dayString, out var day))
+            {
+                return day;
+            }
+           throw new ArgumentException($"Invalid day: {dayString}");
+        }
     }
+    
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace VeseetaProject.Core.Models
@@ -14,6 +15,7 @@ namespace VeseetaProject.Core.Models
         public string time { get; set; }
 
         public int AppointmentId {  get; set; }
+        [JsonIgnore]
         public Appointment Appointment { get; set; }
 
         public Booking Booking { get; set; }

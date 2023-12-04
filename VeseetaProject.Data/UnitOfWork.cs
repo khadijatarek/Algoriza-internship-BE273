@@ -12,11 +12,13 @@ namespace VeseetaProject.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+
         public IBaseRepository<Specialization> Specializations { get;}
         public IBaseRepository<ApplicationUser> Users { get;}
         public IBaseRepository<Doctor> Doctors { get; }
         public IBaseRepository<Appointment> Appointments { get; }
         public IBaseRepository<Booking> Bookings { get; }
+        public IBaseRepository<Coupon> Coupons { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -27,6 +29,7 @@ namespace VeseetaProject.Data
             Doctors = new BaseRepository<Doctor>(context);
             Appointments = new BaseRepository<Appointment>(context);
             Bookings = new BaseRepository<Booking>(context);
+            Coupons = new BaseRepository<Coupon>(context);
         }
 
         public int Complete()

@@ -20,8 +20,6 @@ namespace VeseetaProject.API.Controllers.Admin
             _doctorService = DoctorService;
         }
         [HttpGet("Get All Doctors")]
-
-
         public async Task<IActionResult> getAllDoctors()
         {
             return Ok(await _doctorService.GetAllDoctors());

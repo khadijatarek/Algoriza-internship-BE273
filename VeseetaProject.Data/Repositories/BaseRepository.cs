@@ -78,9 +78,8 @@ namespace VeseetaProject.Data.Repositories
             return null;
         }
 
-        public async Task<T> GetById(int id)//, string[]? includes = null)
+        public async Task<T> GetById(int id)
         {
-            var allResults = GetAll();// null, null, null, includes);
             var result = await _context.Set<T>().FindAsync(id);
             if (result != null)
                 return result;
