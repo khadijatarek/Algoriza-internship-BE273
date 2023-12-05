@@ -29,7 +29,7 @@ namespace VeseetaProject.Services
             return booking;
         }
 
-        public async Task<IEnumerable<DoctorResponse>> getAllDoctorsAppointments()
+        public async Task<IEnumerable<DoctorResponse>> getAvailableAppointments()
         {
             var doctorResponses = await _unitOfWork.Doctors.getAllAppointmentsAndDoctorDetails();
             return doctorResponses;

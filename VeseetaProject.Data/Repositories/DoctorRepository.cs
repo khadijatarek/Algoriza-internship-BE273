@@ -32,7 +32,7 @@ namespace VeseetaProject.Data.Repositories
                     FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
                     Email = doctor.User.Email,
                     Phone = doctor.User.PhoneNumber,
-                    Specialization = doctor.Specialization.NameEn, // You can choose the appropriate language
+                    Specialization = doctor.Specialization.NameEn,
                     Price = doctor.Price,
                     Gender = doctor.User.Gender?.ToString(),
                     Appointments = doctor.Appointments.Select(appointment => new AppointmentResponse
@@ -46,16 +46,6 @@ namespace VeseetaProject.Data.Repositories
                     }).ToList()
                 });
             return Response;
-        }
-        public async Task<Doctor> getAllAppointmentsAndDoctorDetails2()
-        {
-            var doctors = await _context.Doctors.FindAsync(3);
-            //.Include(d => d.User)
-            //.Include(d => d.Specialization)
-            //.Include(d => d.Appointments)
-                //.ThenInclude(d => d.Times)
-            //.ToListAsync();
-            return doctors;
         }
     }
 }

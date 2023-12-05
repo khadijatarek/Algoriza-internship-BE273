@@ -30,9 +30,14 @@ namespace VeseetaProject.API.Controllers.Patient
         
         [HttpGet("Get All available appointments")]
         //public ActionResult getAllAppointments(int page, int pageSize, string search)
-        public ActionResult getAllAppointments()
+        public async Task<IActionResult> getAllAppointments()
         {
-            throw new NotImplementedException();
+            var results = await _bookingService.getAvailableAppointments();
+            if (results != null)
+            {
+                return Ok(results);
+            }
+            return BadRequest();
         }
 
         [HttpPost("Add Booking")]

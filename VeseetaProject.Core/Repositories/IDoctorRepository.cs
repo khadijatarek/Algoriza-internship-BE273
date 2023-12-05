@@ -11,6 +11,5 @@ namespace VeseetaProject.Core.Repositories
     public interface IDoctorRepository :IBaseRepository<Doctor>
     {
         Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails();
-        Task<Doctor> getAllAppointmentsAndDoctorDetails2();
     }
 }
