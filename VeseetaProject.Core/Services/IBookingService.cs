@@ -12,5 +12,6 @@ namespace VeseetaProject.Core.Services
     {
         Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId);
         Task<IEnumerable<DoctorResponse>> getAvailableAppointments();
+        Task<Booking> addBooking(string patientId, int timeId,string? discountCode);
     }
 }

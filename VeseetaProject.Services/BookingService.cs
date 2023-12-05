@@ -21,11 +21,20 @@ namespace VeseetaProject.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<Booking> addBooking(string patientId, int timeId)
+        public async Task<Booking> addBooking(string patientId, int timeId, string? discountCode)
         {
-            var booking = await _unitOfWork.Bookings.Add(new Booking {
+            //check if the coupon is eligble 
+            //var coupon = await _unitOfWork.Coupons.Find(c => c.DiscountCode == discountCode);
+            
+            var booking = await _unitOfWork.Bookings.Add(new Booking
+            {
                 PatientId = patientId,
-                TimeId = timeId });
+                TimeId = timeId,
+                Status = BookingStatus.Pending,
+
+            });
+            //}
+            _unitOfWork.Complete();
             return booking;
         }
 

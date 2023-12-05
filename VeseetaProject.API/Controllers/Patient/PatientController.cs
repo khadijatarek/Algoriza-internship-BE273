@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VeseetaProject.Core.DTOs;
 using VeseetaProject.Core.Models;
 using VeseetaProject.Core.Services;
 
@@ -41,9 +42,10 @@ namespace VeseetaProject.API.Controllers.Patient
         }
 
         [HttpPost("Add Booking")]
-        public ActionResult AddBooking(Booking booking)
+        public async Task<IActionResult> AddBooking(BookingDTO bookingDTO, string patientId)
         {
-            throw new NotImplementedException();
+            var result =await _bookingService.addBooking(patientId, bookingDTO.TimeId, bookingDTO.Coupon);
+            return Ok(result);
         }
 
         [HttpGet("getAllUserBookings")]
