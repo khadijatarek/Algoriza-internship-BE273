@@ -115,7 +115,21 @@ namespace VeseetaProject.Data.Repositories
             return entities;
         }
 
+        public T Update(T entity)
+        {
+           _context.Update(entity);
+            return entity;
+        }
 
-     
+        public void DeleteById(int id)
+        {
+            var entity = _context.Set<T>().Find(id);
+            _context.Set<T>().Remove(entity);
+        }
+        public void DeleteById(string id)
+        {
+            var entity = _context.Set<T>().Find(id);
+            _context.Set<T>().Remove(entity);
+        }
     }
 }

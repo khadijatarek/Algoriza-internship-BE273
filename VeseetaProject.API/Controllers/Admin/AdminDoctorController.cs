@@ -26,11 +26,12 @@ namespace VeseetaProject.API.Controllers.Admin
         }
 
 
-        //[HttpGet("Get Doctor By Id")]
-        //public async Task<IActionResult> getDoctor([FromRoute]int id)
-        //{
-        //    return Ok(await _doctorService.GetDoctorById(id));
-        //}
+        [HttpGet("Get Doctor By Id")]
+        public async Task<IActionResult> getDoctor([FromRoute] int id)
+        {
+            throw new NotImplementedException();
+            //return Ok(await _doctorService.GetDoctorById(id));
+        }
 
 
         [HttpPost("AddDoctor")]
@@ -52,5 +53,15 @@ namespace VeseetaProject.API.Controllers.Admin
             return BadRequest(result.Errors); // Return the entire result object
         }
 
+        [HttpPut("EditDoctor")]
+        public ActionResult Update(DoctorDetailsDTO doctor)
+        {
+            throw new NotImplementedException();
+        }
+        [HttpDelete("DeleteDoctor")]
+        public ActionResult Update(int doctorId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

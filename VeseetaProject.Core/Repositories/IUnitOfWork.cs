@@ -11,10 +11,13 @@ namespace VeseetaProject.Core.Repositories
     {
         IBaseRepository<Specialization> Specializations { get; }
         public IBaseRepository<ApplicationUser> Users { get; }
-        IBaseRepository<Doctor> Doctors { get; }
+        //IBaseRepository<Doctor> Doctors { get; }
+        public IDoctorRepository Doctors { get; }
         IBaseRepository<Appointment> Appointments { get; }
         IBaseRepository<Booking> Bookings { get; }
         IBaseRepository<Coupon> Coupons { get; }
+
+        ITestRepository Appointments2 { get; }
 
         int Complete();
 

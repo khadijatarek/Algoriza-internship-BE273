@@ -16,6 +16,25 @@ namespace VeseetaProject.API.Controllers.Doctor
             _doctorService = doctorService;
         }
 
+        //[HttpGet("GET DOCTOR BY ID")]
+        //public async Task<IActionResult> getbyId(int id)
+        //{
+        //    return Ok(await _doctorService.GetDoctor_ById(id));
+        //}
+
+
+        [HttpPost("api/[controller]/Login")]
+        public IActionResult login(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost("api/[controller]/ConfirmCheckup")]
+        public IActionResult confirmCheckup(int bookingId)
+        {
+            throw new NotImplementedException();
+        }
+
         [HttpGet("api/[controller]/Booking/[action]")]
         public async Task<IActionResult> GetAll()
         {
@@ -23,19 +42,28 @@ namespace VeseetaProject.API.Controllers.Doctor
             return Ok(await _doctorService.GetAllDoctors());
         }
 
+
+
         [HttpPost("api/[controller]/Appointments/[action]")]
         public async Task<IActionResult> Add(int doctorId,AppointmentDTO appointmentDTO)
         {
             return Ok(await _doctorService.AddAppointment(doctorId,appointmentDTO));
         }
-
-        [HttpGet("GET DOCTOR BY ID")]
-        public async Task<IActionResult> getbyId(int id)
+        
+        [HttpPut("api/[controller]/Appointments/[action]")]
+        public IActionResult Update(int doctorId,AppointmentDTO appointmentDTO)
         {
-            return Ok(await _doctorService.GetDoctor_ById(id));
+            throw new NotImplementedException();
+        }
+        
+        [HttpDelete("api/[controller]/Appointments/[action]")]
+        public IActionResult Delete(int doctorId)
+        {
+            throw new NotImplementedException();
         }
 
-      
+
+       
     }
    
 }

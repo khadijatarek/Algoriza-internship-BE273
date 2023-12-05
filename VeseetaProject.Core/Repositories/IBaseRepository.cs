@@ -21,9 +21,9 @@ namespace VeseetaProject.Core.Repositories
         Task<T> Add(T entity);
         Task<IEnumerable<T>> AddRange(IEnumerable<T> entities);
 
-        //T Update(T entity);
+        T Update(T entity);
 
-        //void DeleteById(int id);
-        //void DeleteById(string id);
+        void DeleteById(int id);
+        void DeleteById(string id);
     }
 }

@@ -15,10 +15,12 @@ namespace VeseetaProject.Data
 
         public IBaseRepository<Specialization> Specializations { get;}
         public IBaseRepository<ApplicationUser> Users { get;}
-        public IBaseRepository<Doctor> Doctors { get; }
+        public IDoctorRepository Doctors { get; }
         public IBaseRepository<Appointment> Appointments { get; }
         public IBaseRepository<Booking> Bookings { get; }
         public IBaseRepository<Coupon> Coupons { get; }
+
+        public ITestRepository Appointments2 { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -26,10 +28,12 @@ namespace VeseetaProject.Data
 
             Specializations = new BaseRepository<Specialization>(context);
             Users = new BaseRepository<ApplicationUser>(context);
-            Doctors = new BaseRepository<Doctor>(context);
+            //Doctors = new BaseRepository<Doctor>(context);
+            Doctors = new DoctorRepository(context);
             Appointments = new BaseRepository<Appointment>(context);
             Bookings = new BaseRepository<Booking>(context);
             Coupons = new BaseRepository<Coupon>(context);
+            Appointments2= new TestRepository(context);
         }
 
         public int Complete()

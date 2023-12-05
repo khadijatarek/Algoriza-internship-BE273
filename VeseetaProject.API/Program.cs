@@ -36,6 +36,8 @@ namespace VeseetaProject.API
             builder.Services.AddTransient<IDashboardService, DashboardService>();
             builder.Services.AddTransient<IPatientService, PatientService>();
             builder.Services.AddTransient<ICouponService, CouponService>();
+            builder.Services.AddTransient<IBookingService, BookingService>();
+            builder.Services.AddTransient<ITestService, TestService>();
 
 
 

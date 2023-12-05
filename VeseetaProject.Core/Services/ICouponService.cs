@@ -11,8 +11,8 @@ namespace VeseetaProject.Core.Services
     public interface ICouponService
     {
         Task<Coupon> AddCoupon(CouponDTO couponDTO);
-        Task<Coupon> UpdateCoupon(Coupon coupon);
-        Task<bool> DeleteCoupon(int couponId);
+        Coupon UpdateCoupon(Coupon coupon);
+        bool DeleteCoupon(int couponId);
         Task<bool> DeactivateCoupon(int couponId);
 
     }

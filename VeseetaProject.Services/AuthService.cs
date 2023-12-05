@@ -49,6 +49,12 @@ namespace VeseetaProject.Services
         {
             var user = new ApplicationUser
             {
+
+                FirstName = patientDTO.FirstName,
+                LastName = patientDTO.LastName,
+                PhoneNumber = patientDTO.Phone,
+                Image = patientDTO.Image,
+                Gender = ParseGender(patientDTO.Gender),
                 UserName = patientDTO.Email,
                 Email = patientDTO.Email,
                 Type = accountType,
@@ -88,6 +94,21 @@ namespace VeseetaProject.Services
 
             return result; // Return the original result with errors
         }
-     }
+        private static Gender ParseGender(string genderString)
+        {
+            if (string.IsNullOrWhiteSpace(genderString))
+            {
+                // Default to some value (you can change this based on your requirements)
+                return Gender.Male;
+            }
+
+            if (Enum.TryParse<Gender>(genderString, true, out var gender))
+            {
+                return gender;
+            }
+
+            throw new ArgumentException($"Invalid gender: {genderString}", nameof(genderString));
+        }
+    }
 
 }

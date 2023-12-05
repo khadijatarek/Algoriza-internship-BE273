@@ -26,6 +26,21 @@ namespace VeseetaProject.API.Controllers.Admin
         {
             return await _dashboardService.getPatientsNum();
         }
-        
-      }
+        [HttpGet("NumOfRequests")]
+        public ActionResult getNumOfrequests()
+        {
+            throw new NotImplementedException();
+        }
+        [HttpGet("Top5Specializations")]
+        public ActionResult Top5Specializations()
+        {
+            throw new NotImplementedException();
+        }
+        [HttpGet("Top10Doctors")]
+        public ActionResult Top10Doctors()
+        {
+            throw new NotImplementedException();
+        }
+
+    }
 }

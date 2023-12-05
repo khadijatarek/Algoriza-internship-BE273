@@ -37,19 +37,29 @@ namespace VeseetaProject.Services
         }
 
 
-        public Task<Coupon> UpdateCoupon(Coupon coupon)
+        public Coupon UpdateCoupon(Coupon coupon)
         {
-            throw new NotImplementedException();
+            var result = _unitOfWork.Coupons.Update(coupon);
+            _unitOfWork.Complete();
+            if (result != null)
+            {
+                return result;
+            }
+            else return null;
         }
 
-        public Task<bool> DeactivateCoupon(int couponId)
+        public async Task<bool> DeactivateCoupon(int couponId)
         {
-            throw new NotImplementedException();
+            var coupon = await _unitOfWork.Coupons.GetById(couponId);
+            coupon.IsActive = false;
+            UpdateCoupon(coupon);
+            return true;
         }
 
-        public Task<bool> DeleteCoupon(int couponId)
+        public bool DeleteCoupon(int couponId)
         {
-            throw new NotImplementedException();
+            _unitOfWork.Coupons.DeleteById(couponId);
+            return true;
         }
     }
 }

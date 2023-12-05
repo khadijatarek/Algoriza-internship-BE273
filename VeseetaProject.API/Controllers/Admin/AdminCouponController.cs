@@ -17,13 +17,31 @@ namespace VeseetaProject.API.Controllers.Admin
             _couponService = couponService;
         }
         [HttpPost("AddCoupon")]
-        public async Task<IActionResult> addCoupon(CouponDTO couponDTO)
+        public async Task<IActionResult> addCoupon([FromForm] CouponDTO couponDTO)
         {
             if (couponDTO == null)
             {
                 return BadRequest();
             }
             return Ok( await _couponService.AddCoupon(couponDTO));
+        }
+        [HttpPut("UpdateCoupon")]
+        public ActionResult updateCoupon(Coupon coupon)
+        {
+            return Ok(_couponService.UpdateCoupon(coupon));
+            //throw new NotImplementedException();
+        }
+        [HttpDelete("DeleteCoupon")]
+        public ActionResult deleteCoupom(int couponId)
+        {
+            return Ok(_couponService.DeleteCoupon(couponId));
+            //throw new NotImplementedException();
+        }
+        [HttpPut("DeactivateCoupon")]
+        public ActionResult deactivateCoupon(int couponId)
+        {
+            return Ok(_couponService.DeactivateCoupon(couponId));
+            //throw new NotImplementedException();
         }
     }
 }
