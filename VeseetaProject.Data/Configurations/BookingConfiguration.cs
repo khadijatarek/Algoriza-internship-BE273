@@ -36,6 +36,12 @@ namespace VeseetaProject.Data.Configurations
             //Save enum as string
             builder.Property(b => b.Status)
                    .HasConversion<string>();
+
+            //price 
+            builder.Property(b => b.Price)
+                 .HasColumnType("decimal(18,2)");
+            builder.Property(b => b.Price_total)
+                 .HasColumnType("decimal(18,2)");
         }
     }
 }

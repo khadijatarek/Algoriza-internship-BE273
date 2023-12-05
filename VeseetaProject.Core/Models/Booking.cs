@@ -17,6 +17,9 @@ namespace VeseetaProject.Core.Models
         public string PatientId { get; set; }
         public ApplicationUser Patient { get; set; }
         
+        public decimal? Price { get; set; }
+        public decimal? Price_total { get; set; }
+
         
         public int TimeId { get; set; }
         public Time Time { get; set; }
