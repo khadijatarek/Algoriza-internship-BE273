@@ -26,7 +26,7 @@ namespace VeseetaProject.API.Controllers.Admin
             return Ok( await _couponService.AddCoupon(couponDTO));
         }
         [HttpPut("UpdateCoupon")]
-        public ActionResult updateCoupon(Coupon coupon)
+        public ActionResult updateCoupon([FromForm] Coupon coupon)
         {
             return Ok(_couponService.UpdateCoupon(coupon));
             //throw new NotImplementedException();
