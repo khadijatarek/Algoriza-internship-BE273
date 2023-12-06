@@ -42,6 +42,7 @@ namespace VeseetaProject.Data
 
             //Seed Data 
             DataSeeder.SeedSpecializations(builder);
+            DataSeeder.SeedRoles(builder);
             DataSeeder.SeedAdminData(builder);
 
             base.OnModelCreating(builder);

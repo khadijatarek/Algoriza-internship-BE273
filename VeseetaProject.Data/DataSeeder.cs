@@ -10,7 +10,7 @@ using VeseetaProject.Core.Models;
 namespace VeseetaProject.Data
 {
     public static class DataSeeder
-    {//, UserManager<ApplicationUser> userManager)
+    {
         internal static void SeedAdminData(ModelBuilder modelBuilder)
         {
             var adminUser = new ApplicationUser
@@ -29,7 +29,22 @@ namespace VeseetaProject.Data
             adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser,adminPassword);
             
             modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
-          
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                RoleId = "Admin", 
+                UserId = adminUser.Id,
+            });
+
+        }
+
+        internal static void SeedRoles(ModelBuilder modelBuilder)
+        {
+            string[] roles = { "Admin", "Patient", "Doctor" };
+
+            foreach (var roleName in roles)
+            {
+                modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = roleName, NormalizedName = roleName.ToUpper() });
+            }
         }
 
         internal static void SeedSpecializations(ModelBuilder modelBuilder)
