@@ -12,7 +12,7 @@ namespace VeseetaProject.Core.DTOs
         public string Type { get; set; }
         public int NumOfBookings { get; set; }
         public string DiscountCode { get; set; }
-        public decimal? Value { get; set; }
+        public decimal Value { get; set; }
 
 
     }

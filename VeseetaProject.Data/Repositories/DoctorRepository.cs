@@ -16,6 +16,7 @@ namespace VeseetaProject.Data.Repositories
         public DoctorRepository(ApplicationDbContext context) : base(context)
         {
         }
+
         public async Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails()
         {
             var doctors = await _context.Doctors
@@ -46,6 +47,18 @@ namespace VeseetaProject.Data.Repositories
                     }).ToList()
                 });
             return Response;
+        }
+        
+        public decimal GetAppointmentPrice(int timeId)
+        {
+            var time =  _context.Times
+            .Where(t => t.TimeId == timeId)
+            .Include(t => t.Appointment)
+                .ThenInclude(a => a.Doctor)
+            .FirstOrDefault();
+
+            var price = time.Appointment.Doctor.Price;
+            return (decimal)price;
         }
     }
 }

@@ -10,12 +10,12 @@ namespace VeseetaProject.Core.Repositories
     public interface IUnitOfWork :IDisposable
     {
         IBaseRepository<Specialization> Specializations { get; }
-        public IBaseRepository<ApplicationUser> Users { get; }
-        //IBaseRepository<Doctor> Doctors { get; }
-        public IDoctorRepository Doctors { get; }
+        IBaseRepository<ApplicationUser> Users { get; }
+        IDoctorRepository Doctors { get; }
         IBaseRepository<Appointment> Appointments { get; }
         IBaseRepository<Booking> Bookings { get; }
         IBaseRepository<Coupon> Coupons { get; }
+        IPatientRepository Patients { get; }
 
         ITestRepository Appointments2 { get; }
 

@@ -25,15 +25,40 @@ namespace VeseetaProject.Services
         {
             //check if the coupon is eligble 
             //var coupon = await _unitOfWork.Coupons.Find(c => c.DiscountCode == discountCode);
-            
-            var booking = await _unitOfWork.Bookings.Add(new Booking
+
+            //var booking = await _unitOfWork.Bookings.Add(new Booking
+            //{
+            //    PatientId = patientId,
+            //    TimeId = timeId,
+            //    Status = BookingStatus.Pending,
+
+            //});
+            ////}
+            ///
+            var bookingPrice = _unitOfWork.Doctors.GetAppointmentPrice(timeId);
+            var booking = new Booking()
             {
                 PatientId = patientId,
                 TimeId = timeId,
                 Status = BookingStatus.Pending,
+                Price = bookingPrice
+            };
 
-            });
-            //}
+            if(!string.IsNullOrEmpty(discountCode) )
+            {
+                var coupon = await _unitOfWork.Coupons
+                    .Find(c => c.DiscountCode == discountCode);
+                if (coupon != null) //&& IsCouponEligible(coupon, patientId))
+                {
+                    booking.Coupon = coupon;
+                    booking.Price_total = GetPriceAfterDiscount(bookingPrice, coupon);
+                }
+                else
+                {
+                    booking.Price_total = bookingPrice;
+                }
+            }
+            booking = await _unitOfWork.Bookings.Add(booking);
             _unitOfWork.Complete();
             return booking;
         }
@@ -55,6 +80,37 @@ namespace VeseetaProject.Services
             return await _unitOfWork.Bookings.GetAll(booking => booking.Time.Appointment.DoctorId == doctorId,
                 null, null, new[] { "Time", "Time.Appointment", "Time.Appointment.Doctor", "Time.Appointment.DoctorId" } );
         }
+
+
+
+
+        private bool IsCouponEligible(Coupon coupon, string patientId)
+        {
+            var numOfPatientBookings = _unitOfWork.Patients.getNumberOfCompletedBookings(patientId);
+            if(numOfPatientBookings >= coupon.NumOfBookings)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        private decimal GetPriceAfterDiscount(decimal price, Coupon coupon)
+        {
+            decimal totalPrice;
+            if(coupon.Type == DiscountType.Percentage)
+            {
+                totalPrice = price * (1 - coupon.Value / 100);
+            }
+            else
+            {
+                totalPrice = price - coupon.Value;
+            }
+            return totalPrice;
+        }
     }
-  
+
 }

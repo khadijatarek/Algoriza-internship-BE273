@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace VeseetaProject.Core.Models
@@ -16,10 +17,11 @@ namespace VeseetaProject.Core.Models
         public int NumOfBookings { get; set; }
         public string DiscountCode { get; set; }
 
-        public decimal? Value { get; set; }
+        public decimal Value { get; set; }
         public bool IsUsed { get; set; }
 
         public bool IsActive { get; set; }
+        [JsonIgnore]
         public ICollection<Booking> Bookings { get; set; }
     }
 }

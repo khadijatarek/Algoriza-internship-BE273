@@ -18,6 +18,7 @@ namespace VeseetaProject.Core.Models
         [JsonIgnore]
         public Appointment Appointment { get; set; }
 
+        [JsonIgnore]
         public Booking Booking { get; set; }
     }
 }

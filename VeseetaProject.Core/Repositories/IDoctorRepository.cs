@@ -11,5 +11,6 @@ namespace VeseetaProject.Core.Repositories
     public interface IDoctorRepository :IBaseRepository<Doctor>
     {
         Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails();
+        decimal GetAppointmentPrice(int timeId);
     }
 }
