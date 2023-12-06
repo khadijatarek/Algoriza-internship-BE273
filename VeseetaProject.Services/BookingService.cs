@@ -44,7 +44,7 @@ namespace VeseetaProject.Services
                 Price = bookingPrice
             };
 
-            if(!string.IsNullOrEmpty(discountCode) )
+            if (!string.IsNullOrEmpty(discountCode))
             {
                 var coupon = await _unitOfWork.Coupons
                     .Find(c => c.DiscountCode == discountCode);
@@ -53,10 +53,11 @@ namespace VeseetaProject.Services
                     booking.Coupon = coupon;
                     booking.Price_total = GetPriceAfterDiscount(bookingPrice, coupon);
                 }
-                else
-                {
-                    booking.Price_total = bookingPrice;
-                }
+
+            }
+            else
+            {
+                booking.Price_total = bookingPrice;
             }
             booking = await _unitOfWork.Bookings.Add(booking);
             _unitOfWork.Complete();
