@@ -14,5 +14,7 @@ namespace VeseetaProject.Core.Services
         //Task<DoctorDetailsDTO> GetDoctorById(int id);
         Task<IEnumerable<Appointment>> AddAppointment(int doctorId, AppointmentDTO appointmentDTO);
         Task<Doctor> GetDoctor_ById(int id);
-            }
+        Task<Booking> ConfirmCheckUpAsync(/*int doctorId,*/ int bookingId);
+
+    }
 }

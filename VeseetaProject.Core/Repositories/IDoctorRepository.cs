@@ -12,5 +12,6 @@ namespace VeseetaProject.Core.Repositories
     {
         Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails();
         decimal GetAppointmentPrice(int timeId);
+        //int GetDoctorIdFromBooking(int bookingId);
     }
 }

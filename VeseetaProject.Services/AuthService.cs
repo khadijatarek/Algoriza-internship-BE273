@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using VeseetaProject.Core.DTOs;
@@ -45,6 +48,43 @@ namespace VeseetaProject.Services
             return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt." });
         }
 
+        //public async Task<IdentityResult> LoginAsync(LoginDTO loginDTO)
+        //{
+        //    var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+        //    if (user != null)
+        //    {
+        //        var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, false, false);
+
+        //        if (result.Succeeded)
+        //        {
+        //            var roles = await _userManager.GetRolesAsync(user);
+        //            var claims = new List<Claim>
+        //            {
+        //                new Claim (ClaimTypes.Name , user.FirstName),
+        //                new Claim (ClaimTypes.Email , user.Email),
+        //                new Claim (ClaimTypes.NameIdentifier , user.Id)
+        //            };
+        //            foreach (var role in roles)
+        //            {
+        //                claims.Add(new Claim(ClaimTypes.Role, role)) ;
+        //            }
+        //            var claimsIdentity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
+        //            var authProperties = new AuthenticationProperties
+        //            {
+        //                AllowRefresh = true,
+        //                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+        //                IsPersistent = true,
+        //            };
+        //            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+        //            // Login successful
+        //            return IdentityResult.Success;
+        //        }
+        //    }
+
+        //    // Login failed
+        //    return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt." });
+        //}
+
         public async Task<IdentityResult> RegisterPatientAsync(PatientRegisterDTO patientDTO, AccountType accountType = AccountType.Patient)
         {
             var user = new ApplicationUser
@@ -61,6 +101,11 @@ namespace VeseetaProject.Services
             };
 
             var result = await _userManager.CreateAsync(user, patientDTO.Password);
+            if(result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Patient");
+
+            }
 
             return result;
         }
@@ -76,6 +121,8 @@ namespace VeseetaProject.Services
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "Doctor");
+
                 var userId = await _userManager.GetUserIdAsync(user);
 
                 Doctor doctor = new Doctor()

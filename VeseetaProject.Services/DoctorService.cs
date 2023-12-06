@@ -106,6 +106,28 @@ namespace VeseetaProject.Services
 
         }
 
+        public async Task<Booking> ConfirmCheckUpAsync(/*int doctorId,*/ int bookingId)
+        {
+            
+            var booking =await _unitOfWork.Bookings.GetById(bookingId);
+
+            if (booking.Status == BookingStatus.Pending)// check on doctor id bardo
+            {
+                booking.Status = BookingStatus.Completed;
+                var result = _unitOfWork.Bookings.Update(booking);
+                _unitOfWork.Complete();
+                return booking;
+                //if (result.Status == BookingStatus.Completed)
+                //{
+                //    return true;
+                //}
+                //else
+                //    return false;
+            }
+            else
+                return booking;
+        }
+
         private Days MapStringToDay(string dayString)
         {
             if (Enum.TryParse<Days>(dayString, out var day))

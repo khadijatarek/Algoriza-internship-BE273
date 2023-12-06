@@ -30,9 +30,10 @@ namespace VeseetaProject.API.Controllers.Doctor
         }
 
         [HttpPost("api/[controller]/ConfirmCheckup")]
-        public IActionResult confirmCheckup(int bookingId)
+        public async Task<IActionResult> confirmCheckup(int bookingId)
         {
-            throw new NotImplementedException();
+            var result = await _doctorService.ConfirmCheckUpAsync(bookingId);
+            return Ok(result);
         }
 
         [HttpGet("api/[controller]/Booking/[action]")]

@@ -21,7 +21,7 @@ namespace VeseetaProject.API.Controllers.Patient
         }
 
         [HttpPost("PatientRegister")]
-        public async Task<IActionResult> RegisterPatient(PatientRegisterDTO userDTO)
+        public async Task<IActionResult> RegisterPatient([FromForm] PatientRegisterDTO userDTO)
         {
             var result = await _authService.RegisterPatientAsync(userDTO);
             if(ModelState.IsValid)

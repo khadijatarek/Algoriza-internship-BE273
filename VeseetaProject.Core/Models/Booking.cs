@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace VeseetaProject.Core.Models
@@ -15,6 +16,7 @@ namespace VeseetaProject.Core.Models
         
         
         public string PatientId { get; set; }
+        [JsonIgnore]
         public ApplicationUser Patient { get; set; }
         
         public decimal? Price { get; set; }
@@ -28,6 +30,7 @@ namespace VeseetaProject.Core.Models
         public BookingStatus Status { get; set; }
 
         public int? CouponId { get; set; }
+        [JsonIgnore]
         public Coupon? Coupon { get; set; }
     }
 }
