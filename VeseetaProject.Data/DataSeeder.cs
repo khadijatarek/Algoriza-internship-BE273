@@ -21,9 +21,7 @@ namespace VeseetaProject.Data
                 FirstName = "admin",
                 PhoneNumber = "1234567890",
                 Gender = Gender.Male,
-
                 DateOfBirth = new DateTime(2000, 1, 1),
-
                 Type = AccountType.Admin,
             };
             
@@ -31,15 +29,7 @@ namespace VeseetaProject.Data
             adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser,adminPassword);
             
             modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
-            //if (userManager.FindByEmailAsync(adminUser.Email).Result == null)
-            //{
-            //    var result = userManager.CreateAsync(adminUser, adminPassword).Result;
-            //    if (result.Succeeded)
-            //    {
-            //        userManager.AddToRoleAsync(adminUser, "AdminRole").Wait();
-            //    }
-
-            //}
+          
         }
 
         internal static void SeedSpecializations(ModelBuilder modelBuilder)
