@@ -14,6 +14,7 @@ namespace VeseetaProject.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        
         public DbSet<ApplicationUser> Users { get; set; } 
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
@@ -24,7 +25,7 @@ namespace VeseetaProject.Data
 
 
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {
         }
 
@@ -41,8 +42,8 @@ namespace VeseetaProject.Data
 
             //Seed Data 
             DataSeeder.SeedSpecializations(builder);
-          
-            
+            DataSeeder.SeedAdminData(builder);
+
             base.OnModelCreating(builder);
 
 

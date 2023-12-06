@@ -10,30 +10,37 @@ using VeseetaProject.Core.Models;
 namespace VeseetaProject.Data
 {
     public static class DataSeeder
-    {
-        //        internal static void SeedAdminData(ModelBuilder modelBuilder, UserManager<ApplicationUser> userManager)
-        //        {
-        //            var adminUser = new ApplicationUser
-        //            {
-        //                Email = "admin@veseeta.com",
-        //                UserName = "admin@veseeta.com",
-        //                PasswordHash = "Admin@123",
-        //                Type = AccountType.Admin,
-        //            };
+    {//, UserManager<ApplicationUser> userManager)
+        internal static void SeedAdminData(ModelBuilder modelBuilder)
+        {
+            var adminUser = new ApplicationUser
+            {
+                Email = "admin@veseeta.com",
+                UserName = "admin@veseeta.com",
+                LastName = "admin",
+                FirstName = "admin",
+                PhoneNumber = "1234567890",
+                Gender = Gender.Male,
 
-        //            string adminPassword = "Admin@123";
-        //            if (userManager.FindByEmailAsync(adminUser.Email).Result == null)
-        //            {
-        //                var result = userManager.CreateAsync(adminUser, adminPassword).Result;
-        //            modelBuilder.Entity<ApplicationUser>().HasData(var result = userManager.CreateAsync(adminUser, adminPassword).Result;
-        //)
+                DateOfBirth = new DateTime(2000, 1, 1),
 
+                Type = AccountType.Admin,
+            };
+            
+            string adminPassword = "Admin@123";
+            adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser,adminPassword);
+            
+            modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
+            //if (userManager.FindByEmailAsync(adminUser.Email).Result == null)
+            //{
+            //    var result = userManager.CreateAsync(adminUser, adminPassword).Result;
+            //    if (result.Succeeded)
+            //    {
+            //        userManager.AddToRoleAsync(adminUser, "AdminRole").Wait();
+            //    }
 
-        //            }
-
-
-
-        //        }
+            //}
+        }
 
         internal static void SeedSpecializations(ModelBuilder modelBuilder)
         {
