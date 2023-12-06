@@ -17,7 +17,9 @@ namespace VeseetaProject.Data.Configurations
             builder.HasMany(a => a.Times)
                    .WithOne(t => t.Appointment)
                    .HasForeignKey(t => t.AppointmentId);
-                   
+          
+             builder.Property(a => a.Day)
+            .HasConversion<string>();
         }
     }
 }

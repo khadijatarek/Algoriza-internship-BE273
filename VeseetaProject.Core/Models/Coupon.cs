@@ -13,6 +13,8 @@ namespace VeseetaProject.Core.Models
         [Key]
         public int CouponId { get; set; }
 
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public DiscountType Type { get; set; }
         public int NumOfBookings { get; set; }
         public string DiscountCode { get; set; }

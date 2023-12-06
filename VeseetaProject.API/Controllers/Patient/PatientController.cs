@@ -42,7 +42,7 @@ namespace VeseetaProject.API.Controllers.Patient
         }
 
         [HttpPost("Add Booking")]
-        public async Task<IActionResult> AddBooking(BookingDTO bookingDTO, string patientId)
+        public async Task<IActionResult> AddBooking([FromForm]BookingDTO bookingDTO, string patientId)
         {
             var result =await _bookingService.addBooking(patientId, bookingDTO.TimeId, bookingDTO.Coupon);
             return Ok(result);
