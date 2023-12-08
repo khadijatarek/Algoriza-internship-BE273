@@ -48,43 +48,6 @@ namespace VeseetaProject.Services
             return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt." });
         }
 
-        //public async Task<IdentityResult> LoginAsync(LoginDTO loginDTO)
-        //{
-        //    var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-        //    if (user != null)
-        //    {
-        //        var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, false, false);
-
-        //        if (result.Succeeded)
-        //        {
-        //            var roles = await _userManager.GetRolesAsync(user);
-        //            var claims = new List<Claim>
-        //            {
-        //                new Claim (ClaimTypes.Name , user.FirstName),
-        //                new Claim (ClaimTypes.Email , user.Email),
-        //                new Claim (ClaimTypes.NameIdentifier , user.Id)
-        //            };
-        //            foreach (var role in roles)
-        //            {
-        //                claims.Add(new Claim(ClaimTypes.Role, role)) ;
-        //            }
-        //            var claimsIdentity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
-        //            var authProperties = new AuthenticationProperties
-        //            {
-        //                AllowRefresh = true,
-        //                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
-        //                IsPersistent = true,
-        //            };
-        //            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-        //            // Login successful
-        //            return IdentityResult.Success;
-        //        }
-        //    }
-
-        //    // Login failed
-        //    return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt." });
-        //}
-
         public async Task<IdentityResult> RegisterPatientAsync(PatientRegisterDTO patientDTO, AccountType accountType = AccountType.Patient)
         {
             var user = new ApplicationUser
@@ -94,16 +57,17 @@ namespace VeseetaProject.Services
                 LastName = patientDTO.LastName,
                 PhoneNumber = patientDTO.Phone,
                 ImageUrl = patientDTO.Image,
-                Gender = ParseGender(patientDTO.Gender),
+                Gender = patientDTO.Gender,//ParseGender(patientDTO.Gender),
                 UserName = patientDTO.Email,
                 Email = patientDTO.Email,
                 Type = accountType,
+                DateOfBirth = patientDTO.DateOfBirth,
             };
 
             var result = await _userManager.CreateAsync(user, patientDTO.Password);
             if(result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "Patient");
+                var assignRoleResult = await _userManager.AddToRoleAsync(user, "Patient");
 
             }
 
