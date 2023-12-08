@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VeseetaProject.Core.Services;
 using VeseetaProject.Services;
@@ -7,6 +8,8 @@ namespace VeseetaProject.API.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
+
     public class AdminPatientController : ControllerBase
     {
         private readonly IPatientService _patientService;

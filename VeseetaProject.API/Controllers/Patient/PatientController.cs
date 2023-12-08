@@ -6,6 +6,7 @@ using VeseetaProject.Core.Services;
 
 namespace VeseetaProject.API.Controllers.Patient
 {
+    //Authorize patient
     [Route("api/[controller]")]
     [ApiController]
     public class PatientController : ControllerBase

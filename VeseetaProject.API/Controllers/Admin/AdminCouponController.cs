@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VeseetaProject.Core.DTOs;
 using VeseetaProject.Core.Models;
@@ -8,6 +9,7 @@ namespace VeseetaProject.API.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class AdminCouponController : ControllerBase
     {
         private readonly ICouponService _couponService;

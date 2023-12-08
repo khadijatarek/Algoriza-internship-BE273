@@ -5,6 +5,7 @@ using VeseetaProject.Core.Services;
 
 namespace VeseetaProject.API.Controllers.Doctor
 {
+    //[Authorize("doctor")]
     //[Route("api/[controller]")]
     [ApiController]
     public class DoctorController : ControllerBase

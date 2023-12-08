@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VeseetaProject.Core.Services;
 
 namespace VeseetaProject.API.Controllers.Admin
 {
+
     [Route("api/[controller]")]
+    [Authorize(Roles ="admin")]
     [ApiController]
     public class AdminDashboardController : ControllerBase
     {
