@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VeseetaProject.Data;
 
@@ -11,9 +12,11 @@ using VeseetaProject.Data;
 namespace VeseetaProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231208135815_seedRoles")]
+    partial class seedRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace VeseetaProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bd67b6b9-efdf-4f5b-9e57-c1325775dfcd",
+                            Id = "95f2d17e-f1d2-4c7f-bacd-37616d6c714e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "52c90521-319e-4ba7-8594-e64a08606196",
+                            Id = "eb2b2475-c067-4646-86a6-131e1fb99c7d",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "fc3c5a52-ac46-445a-afd5-013150936502",
+                            Id = "b6c8e3c9-6474-44b6-8886-612412464f32",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         });
@@ -154,13 +157,6 @@ namespace VeseetaProject.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "8a502909-1c53-4ee8-ac5c-5231c2fad025",
-                            RoleId = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -267,28 +263,6 @@ namespace VeseetaProject.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "8a502909-1c53-4ee8-ac5c-5231c2fad025",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "e4d6bf97-0780-4287-8b5e-adea9b5886b4",
-                            DateOfBirth = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "admin@veseeta.com",
-                            EmailConfirmed = false,
-                            FirstName = "admin",
-                            Gender = "Male",
-                            LastName = "admin",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEGBwdpSsNzKCsB/bW+74k0LSjHTXFEWAy96W9e2sphOllckUxurjuAclmbldTCbA3w==",
-                            PhoneNumber = "1234567890",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2e051ffd-0a72-4dba-bba2-50cd7f643a26",
-                            TwoFactorEnabled = false,
-                            Type = "Admin",
-                            UserName = "admin@veseeta.com"
-                        });
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Appointment", b =>
@@ -310,7 +284,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Booking", b =>
@@ -350,7 +324,7 @@ namespace VeseetaProject.Data.Migrations
                     b.HasIndex("TimeId")
                         .IsUnique();
 
-                    b.ToTable("Bookings", (string)null);
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Coupon", b =>
@@ -383,7 +357,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasKey("CouponId");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Doctor", b =>
@@ -410,7 +384,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Specialization", b =>
@@ -431,7 +405,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasKey("SpecializationId");
 
-                    b.ToTable("Specializations", (string)null);
+                    b.ToTable("Specializations");
 
                     b.HasData(
                         new
@@ -512,7 +486,7 @@ namespace VeseetaProject.Data.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("Times", (string)null);
+                    b.ToTable("Times");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

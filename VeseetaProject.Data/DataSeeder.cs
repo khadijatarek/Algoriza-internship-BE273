@@ -24,17 +24,17 @@ namespace VeseetaProject.Data
                 DateOfBirth = new DateTime(2000, 1, 1),
                 Type = AccountType.Admin,
             };
-            
+
             string adminPassword = "Admin@123";
-            adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser,adminPassword);
-            
+            adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser, adminPassword);
+
             modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
+
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             {
-                RoleId = "Admin", 
+                RoleId = "Admin",
                 UserId = adminUser.Id,
             });
-
         }
 
         internal static void SeedRoles(ModelBuilder modelBuilder)

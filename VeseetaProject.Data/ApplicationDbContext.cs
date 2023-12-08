@@ -41,9 +41,10 @@ namespace VeseetaProject.Data
             builder.ApplyConfiguration(new CouponConfiguration());
 
             //Seed Data 
-            DataSeeder.SeedSpecializations(builder);
             DataSeeder.SeedRoles(builder);
-            //DataSeeder.SeedAdminData(builder);
+            DataSeeder.SeedSpecializations(builder);
+            DataSeeder.SeedAdminData(builder);
+
 
             base.OnModelCreating(builder);
 

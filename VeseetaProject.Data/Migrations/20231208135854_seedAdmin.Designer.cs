@@ -12,8 +12,8 @@ using VeseetaProject.Data;
 namespace VeseetaProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231208131739_newUpdates")]
-    partial class newUpdates
+    [Migration("20231208135854_seedAdmin")]
+    partial class seedAdmin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace VeseetaProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4a7c846f-4675-42e2-bacd-550b4c91da61",
+                            Id = "bd67b6b9-efdf-4f5b-9e57-c1325775dfcd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e5458030-7b69-4200-a80b-b3610aaf8d6c",
+                            Id = "52c90521-319e-4ba7-8594-e64a08606196",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "8b96fa31-eb4d-4847-811a-67fc35cd8423",
+                            Id = "fc3c5a52-ac46-445a-afd5-013150936502",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         });
@@ -157,6 +157,13 @@ namespace VeseetaProject.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "8a502909-1c53-4ee8-ac5c-5231c2fad025",
+                            RoleId = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -263,6 +270,28 @@ namespace VeseetaProject.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8a502909-1c53-4ee8-ac5c-5231c2fad025",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e4d6bf97-0780-4287-8b5e-adea9b5886b4",
+                            DateOfBirth = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@veseeta.com",
+                            EmailConfirmed = false,
+                            FirstName = "admin",
+                            Gender = "Male",
+                            LastName = "admin",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEGBwdpSsNzKCsB/bW+74k0LSjHTXFEWAy96W9e2sphOllckUxurjuAclmbldTCbA3w==",
+                            PhoneNumber = "1234567890",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "2e051ffd-0a72-4dba-bba2-50cd7f643a26",
+                            TwoFactorEnabled = false,
+                            Type = "Admin",
+                            UserName = "admin@veseeta.com"
+                        });
                 });
 
             modelBuilder.Entity("VeseetaProject.Core.Models.Appointment", b =>
