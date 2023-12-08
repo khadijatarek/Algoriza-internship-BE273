@@ -33,20 +33,20 @@ namespace VeseetaProject.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "52c90521-319e-4ba7-8594-e64a08606196", null, "Patient", "PATIENT" },
-                    { "bd67b6b9-efdf-4f5b-9e57-c1325775dfcd", null, "Admin", "ADMIN" },
-                    { "fc3c5a52-ac46-445a-afd5-013150936502", null, "Doctor", "DOCTOR" }
+                    { "34c8a3b0-8e00-47f0-aeb3-35fcf7cb9784", null, "Doctor", "DOCTOR" },
+                    { "990a8280-14c6-4bf2-8d9b-7cb67cdfb6ec", null, "Admin", "ADMIN" },
+                    { "b1faf922-b6b6-43cd-94f8-22c0bb94ba77", null, "Patient", "PATIENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "ImageUrl", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "Type", "UserName" },
-                values: new object[] { "8a502909-1c53-4ee8-ac5c-5231c2fad025", 0, "e4d6bf97-0780-4287-8b5e-adea9b5886b4", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@veseeta.com", false, "admin", "Male", null, "admin", false, null, null, null, "AQAAAAIAAYagAAAAEGBwdpSsNzKCsB/bW+74k0LSjHTXFEWAy96W9e2sphOllckUxurjuAclmbldTCbA3w==", "1234567890", false, "2e051ffd-0a72-4dba-bba2-50cd7f643a26", false, "Admin", "admin@veseeta.com" });
+                values: new object[] { "61d21c34-4841-4238-be05-0ef18f415ac5", 0, "07b18aa0-5e1d-4fdc-9678-db9cb498429a", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@veseeta.com", false, "admin", "Male", null, "admin", false, null, "ADMIN@VESEETA.COM", "ADMIN@VESEETA.COM", "AQAAAAIAAYagAAAAELaoCAUxU1YpkW52HFaueADXydTeNpU5Cv1mtr9B7ZHdOMR5ljN+RAbtHrx/lI33Bw==", "1234567890", false, "afc58824-36c9-4cb8-a456-7241612a3124", false, "Admin", "admin@veseeta.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "bd67b6b9-efdf-4f5b-9e57-c1325775dfcd", "8a502909-1c53-4ee8-ac5c-5231c2fad025" });
+                values: new object[] { "990a8280-14c6-4bf2-8d9b-7cb67cdfb6ec", "61d21c34-4841-4238-be05-0ef18f415ac5" });
         }
 
         /// <inheritdoc />
@@ -55,27 +55,27 @@ namespace VeseetaProject.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "52c90521-319e-4ba7-8594-e64a08606196");
+                keyValue: "34c8a3b0-8e00-47f0-aeb3-35fcf7cb9784");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "bd67b6b9-efdf-4f5b-9e57-c1325775dfcd");
+                keyValue: "990a8280-14c6-4bf2-8d9b-7cb67cdfb6ec");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "fc3c5a52-ac46-445a-afd5-013150936502");
+                keyValue: "b1faf922-b6b6-43cd-94f8-22c0bb94ba77");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "Admin", "8a502909-1c53-4ee8-ac5c-5231c2fad025" });
+                keyValues: new object[] { "Admin", "61d21c34-4841-4238-be05-0ef18f415ac5" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "8a502909-1c53-4ee8-ac5c-5231c2fad025");
+                keyValue: "61d21c34-4841-4238-be05-0ef18f415ac5");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",

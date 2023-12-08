@@ -12,7 +12,7 @@ using VeseetaProject.Data;
 namespace VeseetaProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231208135854_seedAdmin")]
+    [Migration("20231208142744_seedAdmin")]
     partial class seedAdmin
     {
         /// <inheritdoc />
@@ -54,19 +54,19 @@ namespace VeseetaProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bd67b6b9-efdf-4f5b-9e57-c1325775dfcd",
+                            Id = "990a8280-14c6-4bf2-8d9b-7cb67cdfb6ec",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "52c90521-319e-4ba7-8594-e64a08606196",
+                            Id = "b1faf922-b6b6-43cd-94f8-22c0bb94ba77",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "fc3c5a52-ac46-445a-afd5-013150936502",
+                            Id = "34c8a3b0-8e00-47f0-aeb3-35fcf7cb9784",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         });
@@ -161,7 +161,7 @@ namespace VeseetaProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "8a502909-1c53-4ee8-ac5c-5231c2fad025",
+                            UserId = "61d21c34-4841-4238-be05-0ef18f415ac5",
                             RoleId = "Admin"
                         });
                 });
@@ -274,9 +274,9 @@ namespace VeseetaProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8a502909-1c53-4ee8-ac5c-5231c2fad025",
+                            Id = "61d21c34-4841-4238-be05-0ef18f415ac5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e4d6bf97-0780-4287-8b5e-adea9b5886b4",
+                            ConcurrencyStamp = "07b18aa0-5e1d-4fdc-9678-db9cb498429a",
                             DateOfBirth = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@veseeta.com",
                             EmailConfirmed = false,
@@ -284,10 +284,12 @@ namespace VeseetaProject.Data.Migrations
                             Gender = "Male",
                             LastName = "admin",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEGBwdpSsNzKCsB/bW+74k0LSjHTXFEWAy96W9e2sphOllckUxurjuAclmbldTCbA3w==",
+                            NormalizedEmail = "ADMIN@VESEETA.COM",
+                            NormalizedUserName = "ADMIN@VESEETA.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAELaoCAUxU1YpkW52HFaueADXydTeNpU5Cv1mtr9B7ZHdOMR5ljN+RAbtHrx/lI33Bw==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2e051ffd-0a72-4dba-bba2-50cd7f643a26",
+                            SecurityStamp = "afc58824-36c9-4cb8-a456-7241612a3124",
                             TwoFactorEnabled = false,
                             Type = "Admin",
                             UserName = "admin@veseeta.com"

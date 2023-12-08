@@ -23,6 +23,8 @@ namespace VeseetaProject.Data
                 Gender = Gender.Male,
                 DateOfBirth = new DateTime(2000, 1, 1),
                 Type = AccountType.Admin,
+                NormalizedEmail= "ADMIN@VESEETA.COM",
+                NormalizedUserName= "ADMIN@VESEETA.COM",
             };
 
             string adminPassword = "Admin@123";
