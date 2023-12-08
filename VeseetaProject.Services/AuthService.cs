@@ -22,6 +22,7 @@ namespace VeseetaProject.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
+        //private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork)
         {
@@ -57,7 +58,7 @@ namespace VeseetaProject.Services
                 LastName = patientDTO.LastName,
                 PhoneNumber = patientDTO.Phone,
                 ImageUrl = patientDTO.Image,
-                Gender = patientDTO.Gender,//ParseGender(patientDTO.Gender),
+                Gender = patientDTO.Gender,
                 UserName = patientDTO.Email,
                 Email = patientDTO.Email,
                 Type = accountType,
@@ -65,7 +66,7 @@ namespace VeseetaProject.Services
             };
 
             var result = await _userManager.CreateAsync(user, patientDTO.Password);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 var assignRoleResult = await _userManager.AddToRoleAsync(user, "Patient");
 
@@ -77,9 +78,15 @@ namespace VeseetaProject.Services
         {
             var user = new ApplicationUser
             {
-                Email = registerDTO.Email,
+                FirstName = registerDTO.FirstName,
+                LastName = registerDTO.LastName,
+                PhoneNumber = registerDTO.Phone,
+                //ImageUrl = registerDTO.Image,
+                Gender = registerDTO.Gender,
                 UserName = registerDTO.Email,
-                Type = type
+                Email = registerDTO.Email,
+                Type = type,
+                DateOfBirth = registerDTO.DateOfBirth,
             };
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
@@ -105,6 +112,9 @@ namespace VeseetaProject.Services
 
             return result; // Return the original result with errors
         }
+
+
+
         private static Gender ParseGender(string genderString)
         {
             if (string.IsNullOrWhiteSpace(genderString))
@@ -120,6 +130,19 @@ namespace VeseetaProject.Services
 
             throw new ArgumentException($"Invalid gender: {genderString}", nameof(genderString));
         }
-    }
 
+        //private string SaveImageToFolder(IFormFile image)
+        //{
+        //    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+        //    var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+        //    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        image.CopyTo(stream);
+        //    }
+
+        //    return Path.Combine("Images", uniqueFileName);
+        //}
+    }
 }

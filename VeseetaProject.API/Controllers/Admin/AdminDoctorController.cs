@@ -35,7 +35,7 @@ namespace VeseetaProject.API.Controllers.Admin
 
 
         [HttpPost("AddDoctor")]
-        public async Task<IActionResult> AddDoctor(DoctorRegisterDTO registerDTO)
+        public async Task<IActionResult> AddDoctor([FromForm]DoctorRegisterDTO registerDTO)
         {
             var result = await _authService.RegisterDoctorAsync(registerDTO);
 
@@ -45,7 +45,7 @@ namespace VeseetaProject.API.Controllers.Admin
             }
 
             // Handle specific errors or return the entire result object
-            if (result.Errors.Any(error => error.Code == "SomeSpecificErrorCode"))
+            if (result.Errors.Any(error => error.Code == " error"))
             {
                 return BadRequest("Custom error message for a specific condition");
             }
