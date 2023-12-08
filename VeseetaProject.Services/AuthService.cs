@@ -93,7 +93,7 @@ namespace VeseetaProject.Services
                 FirstName = patientDTO.FirstName,
                 LastName = patientDTO.LastName,
                 PhoneNumber = patientDTO.Phone,
-                Image = patientDTO.Image,
+                ImageUrl = patientDTO.Image,
                 Gender = ParseGender(patientDTO.Gender),
                 UserName = patientDTO.Email,
                 Email = patientDTO.Email,

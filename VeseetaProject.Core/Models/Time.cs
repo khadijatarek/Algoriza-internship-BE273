@@ -14,11 +14,15 @@ namespace VeseetaProject.Core.Models
         public int TimeId { get; set; }
         public string time { get; set; }
 
+        public bool isBooked { get; set; } = false;
+
         public int AppointmentId {  get; set; }
         [JsonIgnore]
         public Appointment Appointment { get; set; }
 
         [JsonIgnore]
         public Booking Booking { get; set; }
+
+
     }
 }

@@ -12,22 +12,18 @@ namespace VeseetaProject.Core.Models
     {
         [Key]
         public int BookingId { get; set; }
-        
-        
-        
+        public BookingStatus Status { get; set; }
+
+        public decimal Price { get; set; }
+        public decimal TotalPrice { get; set; }
+
         public string PatientId { get; set; }
         [JsonIgnore]
         public ApplicationUser Patient { get; set; }
         
-        public decimal? Price { get; set; }
-        public decimal? Price_total { get; set; }
 
-        
         public int TimeId { get; set; }
         public Time Time { get; set; }
-
-
-        public BookingStatus Status { get; set; }
 
         public int? CouponId { get; set; }
         [JsonIgnore]

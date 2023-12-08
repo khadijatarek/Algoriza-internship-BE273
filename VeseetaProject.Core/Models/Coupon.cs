@@ -13,7 +13,6 @@ namespace VeseetaProject.Core.Models
         [Key]
         public int CouponId { get; set; }
 
-
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public DiscountType Type { get; set; }
         public int NumOfBookings { get; set; }
@@ -21,8 +20,8 @@ namespace VeseetaProject.Core.Models
 
         public decimal Value { get; set; }
         public bool IsUsed { get; set; }
-
         public bool IsActive { get; set; }
+        
         [JsonIgnore]
         public ICollection<Booking> Bookings { get; set; }
     }

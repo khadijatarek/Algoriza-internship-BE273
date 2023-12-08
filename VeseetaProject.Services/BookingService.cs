@@ -51,13 +51,13 @@ namespace VeseetaProject.Services
                 if (coupon != null) //&& IsCouponEligible(coupon, patientId))
                 {
                     booking.Coupon = coupon;
-                    booking.Price_total = GetPriceAfterDiscount(bookingPrice, coupon);
+                    booking.TotalPrice = GetPriceAfterDiscount(bookingPrice, coupon);
                 }
 
             }
             else
             {
-                booking.Price_total = bookingPrice;
+                booking.TotalPrice = bookingPrice;
             }
             booking = await _unitOfWork.Bookings.Add(booking);
             _unitOfWork.Complete();

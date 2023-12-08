@@ -25,7 +25,7 @@ namespace VeseetaProject.Services
 
             return patients.Select(p => new PatientDetailsDTO
             {
-                Image = p.Image,
+                Image = p.ImageUrl,
                 Email = p.Email,
                 FullName = $"{p.FirstName} {p.LastName}",
                 Phone = p.PhoneNumber,
@@ -39,7 +39,7 @@ namespace VeseetaProject.Services
 
             PatientDetailsDTO patientDetails = new PatientDetailsDTO
             {
-                Image = patient.Image,
+                Image = patient.ImageUrl,
                 Email = patient.Email,
                 FullName = $"{patient.FirstName} {patient.LastName}",
                 Phone = patient.PhoneNumber,

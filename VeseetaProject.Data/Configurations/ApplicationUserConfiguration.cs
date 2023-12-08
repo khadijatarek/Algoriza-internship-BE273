@@ -16,8 +16,11 @@ namespace VeseetaProject.Data.Configurations
         {
             builder.Property(u => u.DateOfBirth)
                    .HasColumnType("date");
+           
             // Convert enum to string
-            builder.Property(c => c.Type)
+            builder.Property(u => u.Type)
+                   .HasConversion<string>(); 
+            builder.Property(u => u.Gender)
                    .HasConversion<string>();
         }
     }

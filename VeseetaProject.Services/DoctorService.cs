@@ -26,7 +26,7 @@ namespace VeseetaProject.Services
             var doctors = await _unitOfWork.Doctors.GetAll(null, null, null, new[] { "User", "Specialization" });
             return doctors.Select(d => new DoctorDetailsDTO
             {
-                Image = d.User.Image,
+                Image = d.User.ImageUrl,
                 FullName = $"{d.User.FirstName} {d.User.LastName}",
                 Email = d.User.Email,
                 Phone = d.User.PhoneNumber,

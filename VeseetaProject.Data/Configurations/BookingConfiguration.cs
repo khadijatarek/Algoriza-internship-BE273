@@ -40,7 +40,7 @@ namespace VeseetaProject.Data.Configurations
             //price 
             builder.Property(b => b.Price)
                  .HasColumnType("decimal(18,2)");
-            builder.Property(b => b.Price_total)
+            builder.Property(b => b.TotalPrice)
                  .HasColumnType("decimal(18,2)");
         }
     }

@@ -12,6 +12,7 @@ namespace VeseetaProject.Core.Models
     {
         [Key]
         public int AppointmentId { get; set; }
+
         public int DoctorId { get; set; }
         public Days Day { get; set; }
 

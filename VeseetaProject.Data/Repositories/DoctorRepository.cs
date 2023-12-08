@@ -29,13 +29,13 @@ namespace VeseetaProject.Data.Repositories
             var Response = doctors.Select(doctor =>
                 new DoctorResponse
                 {
-                    Image = doctor.User.Image,
+                    Image = doctor.User.ImageUrl,
                     FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
                     Email = doctor.User.Email,
                     Phone = doctor.User.PhoneNumber,
                     Specialization = doctor.Specialization.NameEn,
                     Price = doctor.Price,
-                    Gender = doctor.User.Gender?.ToString(),
+                    Gender = doctor.User.Gender.ToString(),
                     Appointments = doctor.Appointments.Select(appointment => new AppointmentResponse
                     {
                         Day = appointment.Day.ToString(),
