@@ -61,6 +61,16 @@ namespace VeseetaProject.Data.Repositories
             return (decimal)price;
         }
 
+        public async Task<bool> DoctorHasAppointmentOnDay(int doctorId, Days day)
+        {
+            var doctor = await GetDoctorById(doctorId); 
+            if (doctor != null && doctor.Appointments != null)
+            {
+                return doctor.Appointments.Any(appointment => appointment.Day == day);
+            }
+            return false;
+        }
+
 
         public int GetDoctorIdFromUserId(string userId)
         {
@@ -75,6 +85,8 @@ namespace VeseetaProject.Data.Repositories
                 .Where(d => d.DoctorId == id)
                 .Include(d => d.User)
                 .Include(d => d.Specialization)
+                .Include(d=>d.Appointments)
+                    .ThenInclude(a=>a.Times)
                 .FirstOrDefaultAsync();
             return doctor;
         }

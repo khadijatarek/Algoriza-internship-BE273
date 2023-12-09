@@ -19,13 +19,6 @@ namespace VeseetaProject.API.Controllers.Doctor
             _doctorService = doctorService;
         }
 
-        //[HttpGet("GET DOCTOR BY ID")]
-        //public async Task<IActionResult> getbyId(int id)
-        //{
-        //    return Ok(await _doctorService.GetDoctor_ById(id));
-        //}
-
-
         [HttpPost("api/[controller]/Login")]
         public IActionResult login(string username, string password)
         {

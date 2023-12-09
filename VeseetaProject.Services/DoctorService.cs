@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,6 @@ namespace VeseetaProject.Services
         }
         public async Task<IActionResult> GetDoctorById(int id)
         {
-
             var doctor = await _unitOfWork.Doctors.GetDoctorById(id);
             if (doctor != null)
             {
@@ -112,51 +112,8 @@ namespace VeseetaProject.Services
         //        return new NotFoundObjectResult("Doctor doesn't exist");
         //    }
         //}
-
-
-
-        //public async Task<IEnumerable<Appointment>> AddAppointment(int doctorId, AppointmentDTO appointmentDTO)
-        //{
-        //    try
-        //    {
-        //        var doctor = await _unitOfWork.Doctors.GetById(doctorId);
-        //        if (doctor == null)
-        //        {
-        //            return null;
-        //        }
-        //        List<Appointment> appointments = appointmentDTO.Appointments.Select(appointmentSlot =>
-        //        new Appointment
-        //        {
-        //            DoctorId = doctorId,
-        //            Day = MapStringToDay(appointmentSlot.Day),
-        //            Times = appointmentSlot.Times.Select(timeString =>
-        //            new Time
-        //            {
-        //                time = timeString,
-        //            }
-        //            ).ToList(),
-        //        }
-        //        ).ToList();
-        //        var result = await _unitOfWork.Appointments.AddRange(appointments);
-        //        if (appointmentDTO.Price.HasValue)
-        //        {
-        //            doctor.Price = appointmentDTO.Price;
-        //        }
-        //        _unitOfWork.Complete();
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return null;
-        //    }
-
-        //}
-
-
-
         public async Task<IActionResult> AddAppointment(int doctorId, AppointmentDTO appointmentDTO)
         {
-            
             var doctor = await _unitOfWork.Doctors.GetById(doctorId);
             if (doctor == null)
             {
@@ -164,6 +121,15 @@ namespace VeseetaProject.Services
             }
             else
             {
+                //check if doctor already have appointments on that day 
+                foreach (var daySlot in appointmentDTO.Appointments)
+                {
+                    var day = MapStringToDay(daySlot.Day);
+                    if (await _unitOfWork.Doctors.DoctorHasAppointmentOnDay(doctorId, day))
+                    {
+                        return new BadRequestObjectResult($"You already have an appointment on {day}, Please enter any other Day");
+                    }
+                }
                 List<Appointment> appointments = appointmentDTO.Appointments.Select(appointmentSlot =>
                 new Appointment
                 {
@@ -194,7 +160,13 @@ namespace VeseetaProject.Services
 
         }
 
-    
+        //public async Task<IActionResult> GetAllBookings(int doctorId,int? pageNum, int? pageSize, string? search)
+        //{
+        //    var doctor = await _unitOfWork.Doctors.GetById(doctorId);
+
+        //}
+
+
 
         public async Task<Booking> ConfirmCheckUpAsync(/*int doctorId,*/ int bookingId)
         {

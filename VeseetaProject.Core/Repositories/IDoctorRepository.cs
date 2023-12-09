@@ -15,5 +15,7 @@ namespace VeseetaProject.Core.Repositories
         decimal GetAppointmentPrice(int timeId);
         //int GetDoctorIdFromBooking(int bookingId);
         Task<Doctor> GetDoctorById(int id);
+
+        Task<bool> DoctorHasAppointmentOnDay(int doctorId, Days day);
     }
 }
