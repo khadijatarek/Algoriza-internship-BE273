@@ -20,12 +20,13 @@ namespace VeseetaProject.Data
         public IBaseRepository<Booking> Bookings { get; }
         public IBaseRepository<Coupon> Coupons { get; }
         public IPatientRepository Patients { get; }
+        public IBaseRepository<Time> Times { get; }
 
-        public ITestRepository Appointments2 { get; }
+
 
         public UnitOfWork(ApplicationDbContext context)
         {
-            _context =context;
+            _context = context;
 
             Specializations = new BaseRepository<Specialization>(context);
             Users = new BaseRepository<ApplicationUser>(context);
@@ -33,8 +34,8 @@ namespace VeseetaProject.Data
             Appointments = new BaseRepository<Appointment>(context);
             Bookings = new BaseRepository<Booking>(context);
             Coupons = new BaseRepository<Coupon>(context);
-            Appointments2= new TestRepository(context);
             Patients = new PatientRepository(context);
+            //Times = new BaseRepository<Time>(context);
         }
 
         public int Complete()
