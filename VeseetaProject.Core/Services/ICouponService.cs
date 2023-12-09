@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,10 @@ namespace VeseetaProject.Core.Services
 {
     public interface ICouponService
     {
-        Task<Coupon> AddCoupon(CouponDTO couponDTO);
-        Coupon UpdateCoupon(Coupon coupon);
-        bool DeleteCoupon(int couponId);
-        Task<bool> DeactivateCoupon(int couponId);
-
+        Task<IActionResult> AddCoupon(CouponDTO couponDTO);
+        Task<IActionResult> UpdateCoupon(CouponDTO couponDTO, int couponID);
+        Task<IActionResult> DeleteCoupon(int couponId);
+        Task<IActionResult> DeactivateCoupon(int couponId);
+        Task<IActionResult> GetAllCoupons();
     }
 }

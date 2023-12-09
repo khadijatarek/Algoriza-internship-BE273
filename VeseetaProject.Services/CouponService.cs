@@ -20,46 +20,150 @@ namespace VeseetaProject.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<Coupon> AddCoupon(CouponDTO couponDTO)
+        public async Task<IActionResult> AddCoupon(CouponDTO couponDTO)
         {
+            // Build the coupon
             var coupon = new Coupon()
             {
+                Type = couponDTO.Type,
                 Value = couponDTO.Value,
                 NumOfBookings = couponDTO.NumOfBookings,
-                DiscountCode = couponDTO.DiscountCode
+                DiscountCode = couponDTO.DiscountCode,
+                //is active
+                IsActive = true,
+                //not used
+                IsUsed = false,
             };
-            var result = _unitOfWork.Coupons.Add(coupon);
-            if(result != null)
-            {
-                _unitOfWork.Complete();
-            }
-            return result;
-        }
 
+            var result = await _unitOfWork.Coupons.Add(coupon);
 
-        public Coupon UpdateCoupon(Coupon coupon)
-        {
-            var result = _unitOfWork.Coupons.Update(coupon);
-            _unitOfWork.Complete();
             if (result != null)
             {
-                return result;
+                _unitOfWork.Complete();
+
+                // added
+                return new OkObjectResult(new
+                {
+                    Success = true,
+                    Coupon = result
+                });
             }
-            else return null;
+            else
+            {
+                // couldnt add a coupon
+                return new BadRequestObjectResult(new
+                {
+                    Success = false,
+                    Message = "Failed to add coupon"
+                });
+            }
+        }
+        public async Task<IActionResult> GetAllCoupons()
+        {
+            var result = await  _unitOfWork.Coupons.GetAll(null, null, null, null);
+            return new OkObjectResult(result);
         }
 
-        public async Task<bool> DeactivateCoupon(int couponId)
+
+        public async Task<IActionResult> UpdateCoupon(CouponDTO couponDTO, int couponID)
         {
-            var coupon = await _unitOfWork.Coupons.GetById(couponId);
-            coupon.IsActive = false;
-            UpdateCoupon(coupon);
-            return true;
+
+            //Get the coupon
+            var existingCoupon = await _unitOfWork.Coupons.Find(c => c.CouponId == couponID);
+
+            if (existingCoupon != null)
+            {
+                // Check if the coupon is already used
+                if (!existingCoupon.IsUsed)
+                {
+                    //save updated data
+                    existingCoupon.Value = couponDTO.Value;
+                    existingCoupon.DiscountCode = couponDTO.DiscountCode;
+                    existingCoupon.Type = couponDTO.Type;
+                    existingCoupon.NumOfBookings = couponDTO.NumOfBookings;
+
+                    // Update the coupon
+                    _unitOfWork.Coupons.Update(existingCoupon);
+                    _unitOfWork.Complete();
+
+                    // Updated Successfully
+                    return new OkObjectResult(new { IsSuccess = true, Message = "Coupon updated successfully" });
+                }
+                else
+                {
+                    //cant update used coupon
+                    return new ObjectResult(new { IsSuccess = false, Message = "Can't update a used Coupon" })
+                    {
+                        StatusCode = 403
+                    };
+                }
+
+            }
+            else
+            {
+                // Not found
+                return new NotFoundObjectResult("Coupon Doesn't Exist");
+            }
         }
 
-        public bool DeleteCoupon(int couponId)
+
+        public async Task<IActionResult> DeleteCoupon(int couponId)
         {
-            _unitOfWork.Coupons.DeleteById(couponId);
-            return true;
+            // Get the coupon by ID
+            var existingCoupon = await _unitOfWork.Coupons.Find(c => c.CouponId == couponId);
+
+            if (existingCoupon != null)
+            {
+                // Check if the coupon is already used
+                if (!existingCoupon.IsUsed)
+                {
+                    // Delete the coupon
+                    _unitOfWork.Coupons.DeleteById(couponId);
+                    _unitOfWork.Complete();
+
+                    // deleted
+                    return new OkObjectResult(new { IsSuccess = true, Message = "Coupon deleted successfully" });
+                }
+                else
+                {
+                    // cant delete
+                    return new ObjectResult(new { IsSuccess = false, Message = "Cannot delete a used coupon" })
+                    {
+                        StatusCode = 403
+                    };
+                }
+            }
+            else
+            {
+                //not found
+                return new NotFoundObjectResult("Coupon doesn't exist");
+            }
+        }
+
+        public async Task<IActionResult> DeactivateCoupon(int couponId)
+        {
+            // Get the coupon by ID
+            var existingCoupon =await  _unitOfWork.Coupons.Find(c => c.CouponId == couponId);
+
+            if (existingCoupon != null)
+            {
+                // deactivate
+                existingCoupon.IsActive = false;
+
+                // Update the coupon
+                _unitOfWork.Coupons.Update(existingCoupon);
+                _unitOfWork.Complete();
+
+                // deactivated
+                return new OkObjectResult(new { IsSuccess = true, Message = "Coupon deactivated successfully" });
+            }
+            else
+            {
+                // not found
+                return new NotFoundObjectResult("Coupon doesn't exist");
+            }
         }
     }
+
+   
 }

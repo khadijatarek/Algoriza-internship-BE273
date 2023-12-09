@@ -18,32 +18,52 @@ namespace VeseetaProject.API.Controllers.Admin
         {
             _couponService = couponService;
         }
-        [HttpPost("AddCoupon")]
-        public async Task<IActionResult> addCoupon([FromForm] CouponDTO couponDTO)
+        [HttpPost("Add Coupon")]
+        public async Task<IActionResult> AddCoupon([FromForm] CouponDTO couponDTO)
         {
-            if (couponDTO == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            return Ok( await _couponService.AddCoupon(couponDTO));
+            var coupon = await _couponService.AddCoupon(couponDTO);
+            return new OkObjectResult( new 
+            {
+                Success = true,
+                Coupon = coupon
+            });
         }
-        [HttpPut("UpdateCoupon")]
-        public ActionResult updateCoupon([FromForm] Coupon coupon)
+        [HttpPut("UpdateCoupon/{id}")]
+        public async Task<IActionResult> UpdateCoupon([FromForm] CouponDTO coupon, int id)
         {
-            return Ok(_couponService.UpdateCoupon(coupon));
-            //throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                var result = await  _couponService.UpdateCoupon(coupon, id);
+                return result ;
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
-        [HttpDelete("DeleteCoupon")]
-        public ActionResult deleteCoupom(int couponId)
+
+        [HttpDelete("DeleteCoupon/{id}")]
+        public async Task<IActionResult> DeleteCoupon(int id)
         {
-            return Ok(_couponService.DeleteCoupon(couponId));
-            //throw new NotImplementedException();
+            return await  _couponService.DeleteCoupon(id);
+            
         }
-        [HttpPut("DeactivateCoupon")]
-        public ActionResult deactivateCoupon(int couponId)
+
+        [HttpPut("DeactivateCoupon/{id}")]
+        public async Task<IActionResult> DeactivateCoupon(int id)
         {
-            return Ok(_couponService.DeactivateCoupon(couponId));
-            //throw new NotImplementedException();
+            return await  _couponService.DeactivateCoupon(id);
+            
+        }
+
+        [HttpGet("Get All Coupons")]
+        public async Task<IActionResult> GetAll()
+        {
+            return await _couponService.GetAllCoupons();
         }
     }
 }

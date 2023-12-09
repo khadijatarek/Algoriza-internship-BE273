@@ -12,15 +12,16 @@ namespace VeseetaProject.Core.DTOs
 {
     public class CouponDTO
     {
-        public string Type { get; set; }
-        public int NumOfBookings { get; set; }
-        public string DiscountCode { get; set; }
-        public decimal Value { get; set; }
-
         [Required]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         [EnumDataType(typeof(DiscountType))]
-        public DiscountType Type1 {  get; set; }
+        public DiscountType Type { get; set; }
+        [Required]
+        public int NumOfBookings { get; set; }
+        [Required]
+        public string DiscountCode { get; set; }
+        [Required]
+        public decimal Value { get; set; }
 
 
     }
