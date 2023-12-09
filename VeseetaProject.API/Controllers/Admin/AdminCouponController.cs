@@ -9,7 +9,7 @@ namespace VeseetaProject.API.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminCouponController : ControllerBase
     {
         private readonly ICouponService _couponService;

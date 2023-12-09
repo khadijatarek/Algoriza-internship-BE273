@@ -7,7 +7,7 @@ namespace VeseetaProject.API.Controllers.Admin
 {
 
     [Route("api/[controller]")]
-    [Authorize(Roles ="admin")]
+    [Authorize(Roles ="Admin")]
     [ApiController]
     public class AdminDashboardController : ControllerBase
     {
