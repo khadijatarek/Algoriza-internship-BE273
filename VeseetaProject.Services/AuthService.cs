@@ -157,14 +157,14 @@ namespace VeseetaProject.Services
 
             return result;
         }
-        public async Task<IdentityResult> RegisterDoctorAsync(DoctorRegisterDTO registerDTO, AccountType type = AccountType.Doctor)
+        public async Task<IdentityResult> RegisterDoctorAsync(DoctorRegisterDTO registerDTO, string ImageUrl, AccountType type = AccountType.Doctor)
         {
             var user = new ApplicationUser
             {
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
                 PhoneNumber = registerDTO.Phone,
-                //ImageUrl = registerDTO.Image,
+                ImageUrl = ImageUrl,
                 Gender = registerDTO.Gender,
                 UserName = registerDTO.Email,
                 Email = registerDTO.Email,
@@ -305,18 +305,6 @@ namespace VeseetaProject.Services
             throw new ArgumentException($"Invalid gender: {genderString}", nameof(genderString));
         }
 
-        //private string SaveImageToFolder(IFormFile image)
-        //{
-        //    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
-        //    var uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
-        //    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-        //    using (var stream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        image.CopyTo(stream);
-        //    }
-
-        //    return Path.Combine("Images", uniqueFileName);
-        //}
+       
     }
 }

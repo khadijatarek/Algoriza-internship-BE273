@@ -16,11 +16,13 @@ namespace VeseetaProject.API.Controllers.Admin
     {
         private readonly IAuthService _authService;
         private readonly IDoctorService _doctorService;
+        private readonly IImageService _imageService;
 
-        public AdminDoctorController(IAuthService authService, IDoctorService DoctorService)
+        public AdminDoctorController(IAuthService authService, IDoctorService DoctorService, IImageService imageService)
         {
             _authService = authService;
             _doctorService = DoctorService;
+            _imageService = imageService;
         }
         [HttpGet("Get All Doctors")]
         public async Task<IActionResult> getAllDoctors()
@@ -36,9 +38,11 @@ namespace VeseetaProject.API.Controllers.Admin
 
 
         [HttpPost("AddDoctor")]
-        public async Task<IActionResult> AddDoctor([FromForm]DoctorRegisterDTO registerDTO)
+        public async Task<IActionResult> AddDoctor([FromForm] DoctorRegisterDTO registerDTO)
         {
-            var result = await _authService.RegisterDoctorAsync(registerDTO);
+            var ImageUrl = _imageService.SaveImageToFolder(registerDTO.Image, registerDTO.Email);
+            
+            var result = await _authService.RegisterDoctorAsync(registerDTO, ImageUrl:ImageUrl);
 
             if (result.Succeeded)
             {
@@ -55,11 +59,12 @@ namespace VeseetaProject.API.Controllers.Admin
         }
 
         [HttpPut("EditDoctor/{id}")]
-        public async Task<IActionResult> Update([FromForm]DoctorRegisterDTO doctorDT0,int id)
+        public async Task<IActionResult> Update([FromForm]DoctorRegisterDTO doctorDTO,int id)
         {
             if (ModelState.IsValid)
             {
-                var result = await _doctorService.UpdateDoctor(doctorDT0, id);
+                var ImageUrl = _imageService.SaveImageToFolder(doctorDTO.Image, doctorDTO.Email);
+                var result = await _doctorService.UpdateDoctor(doctorDTO, id, ImageUrl);
                 return result;
             }
             else

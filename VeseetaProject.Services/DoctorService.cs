@@ -17,12 +17,13 @@ namespace VeseetaProject.Services
     {
         private readonly IAuthService _authService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IImageService _imageService;
 
-
-        public DoctorService(IUnitOfWork unitOfWork, IAuthService authService)
+        public DoctorService(IUnitOfWork unitOfWork, IAuthService authService, IImageService imageService)
         {
             _authService = authService;
             _unitOfWork = unitOfWork;
+            _imageService = imageService;
         }
         public async Task<IEnumerable<DoctorDetailsDTO>> GetAllDoctors()
         {
@@ -65,12 +66,13 @@ namespace VeseetaProject.Services
             }
         }
 
-        public async Task<IActionResult> UpdateDoctor(DoctorRegisterDTO doctorDTO, int doctorId)
+        public async Task<IActionResult> UpdateDoctor(DoctorRegisterDTO doctorDTO, int doctorId, string ImageUrl)
         {
             var existingDoctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
-            if(existingDoctor != null)
+            var existingPhoto = existingDoctor.User.ImageUrl;
+            if (existingDoctor != null)
             {
-                //existingDoctor.User.ImageUrl = doctorDTO.Image
+                existingDoctor.User.ImageUrl = ImageUrl;
                 existingDoctor.User.FirstName = doctorDTO.FirstName;
                 existingDoctor.User.LastName = doctorDTO.LastName;
                 existingDoctor.User.Email = doctorDTO.Email;
@@ -81,6 +83,9 @@ namespace VeseetaProject.Services
 
                 _unitOfWork.Doctors.Update(existingDoctor);
                 _unitOfWork.Complete();
+                //Delete Existing photo
+                _imageService.DeletePhoto(existingPhoto);
+
                 return new OkObjectResult(new
                 {
                     Success = true,

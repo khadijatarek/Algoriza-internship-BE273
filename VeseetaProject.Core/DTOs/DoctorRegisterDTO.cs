@@ -12,8 +12,8 @@ namespace VeseetaProject.Core.DTOs
 {
     public class DoctorRegisterDTO
     {
-        //[Required]
-        public IFormFile? Image { get; set; }
+        [Required]
+        public IFormFile Image { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

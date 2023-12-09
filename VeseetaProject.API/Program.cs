@@ -45,6 +45,7 @@ namespace VeseetaProject.API
             builder.Services.AddTransient<ICouponService, CouponService>();
             builder.Services.AddTransient<IBookingService, BookingService>();
             builder.Services.AddTransient<ITestService, TestService>();
+            builder.Services.AddTransient<IImageService, ImageService>();
 
 
             //JWT Configuration 
