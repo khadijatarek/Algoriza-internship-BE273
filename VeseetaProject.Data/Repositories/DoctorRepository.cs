@@ -60,5 +60,23 @@ namespace VeseetaProject.Data.Repositories
             var price = time.Appointment.Doctor.Price;
             return (decimal)price;
         }
+
+
+        public int GetDoctorIdFromUserId(string userId)
+        {
+            var user = _context.Users.Find(userId);
+            var doctorId = _context.Doctors.FirstOrDefault(t => t.UserId == userId).DoctorId;
+            return doctorId;
+        }
+
+        public async Task<Doctor> GetDoctorById(int id)
+        {
+            var doctor = await _context.Doctors
+                .Where(d => d.DoctorId == id)
+                .Include(d => d.User)
+                .Include(d => d.Specialization)
+                .FirstOrDefaultAsync();
+            return doctor;
+        }
     }
 }

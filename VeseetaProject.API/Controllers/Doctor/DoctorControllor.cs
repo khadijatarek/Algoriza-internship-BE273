@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using VeseetaProject.Core.DTOs;
 using VeseetaProject.Core.Services;
 
 namespace VeseetaProject.API.Controllers.Doctor
 {
-    //[Authorize("doctor")]
     //[Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Doctor")]
     public class DoctorController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
@@ -47,9 +49,23 @@ namespace VeseetaProject.API.Controllers.Doctor
 
 
         [HttpPost("api/[controller]/Appointments/[action]")]
-        public async Task<IActionResult> Add(int doctorId,AppointmentDTO appointmentDTO)
+        public async Task<IActionResult> Add(AppointmentDTO appointmentDTO)
         {
-            return Ok(await _doctorService.AddAppointment(doctorId,appointmentDTO));
+            if (ModelState.IsValid)
+            {
+                // Retrieve DoctorId from the JWT token
+                var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
+
+                if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
+                {
+                    return BadRequest("Invalid or missing DoctorId in the token.");
+                }
+
+                return await _doctorService.AddAppointment(doctorId, appointmentDTO);
+            }
+            else { 
+                return BadRequest(ModelState); 
+            }
         }
         
         [HttpPut("api/[controller]/Appointments/[action]")]

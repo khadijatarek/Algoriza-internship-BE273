@@ -10,8 +10,10 @@ namespace VeseetaProject.Core.Repositories
 {
     public interface IDoctorRepository :IBaseRepository<Doctor>
     {
+        int GetDoctorIdFromUserId(string userId);
         Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails();
         decimal GetAppointmentPrice(int timeId);
         //int GetDoctorIdFromBooking(int bookingId);
+        Task<Doctor> GetDoctorById(int id);
     }
 }

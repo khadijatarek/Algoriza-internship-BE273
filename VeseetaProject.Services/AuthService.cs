@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -92,7 +93,7 @@ namespace VeseetaProject.Services
                 {
                     
 
-                    var mytoken = GenerateJWTtoken(user);
+                    var mytoken = GenerateJwtToken(user);
                     return new OkObjectResult(new
                     {
                         LoginSuccess = true,
@@ -195,36 +196,98 @@ namespace VeseetaProject.Services
             return result; // Return the original result with errors
         }
 
-        private string GenerateJWTtoken(ApplicationUser user)
+        //private string GenerateJWTtoken(ApplicationUser user)
+        //{
+        //    var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+
+        //    var claims = new List<Claim>();
+        //    claims.Add(new Claim(ClaimTypes.Name, user.Email));
+        //    claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+        //    claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+        //    //check if user is doctor to add doctor ID ro jwt 
+        //    if (user.Type == AccountType.Doctor)
+        //    {
+        //        var doctorId = _unitOfWork.Doctors.GetDoctorIdFromUserId(user.Id);
+        //        if (doctorId != null)
+        //        {
+        //            claims.Add(new Claim("DoctorId", doctorId.ToString()));
+        //        }
+        //    }
+
+        //    //get roles
+        //    var roles = _userManager.GetRolesAsync(user).Result;
+            
+        //    foreach (var role in roles)
+        //    {
+        //        claims.Add(new Claim(ClaimTypes.Role, role));
+        //    }
+            
+        //    //build key
+        //    SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Key").Value));
+
+        //    SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        //    //create token
+        //    JwtSecurityToken token = new JwtSecurityToken(
+        //        issuer: _configuration.GetSection("JWT:ValidIssuer").Value,
+        //        audience: _configuration.GetSection("JWT:ValidAudience").Value,
+        //        claims: claims,
+        //        expires: DateTime.Now.AddHours(1),
+        //        signingCredentials: signingCredentials
+        //        );
+        //    return jwtTokenHandler.WriteToken(token);
+        //}
+
+        private string GenerateJwtToken(ApplicationUser user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
+            var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Key").Value);
 
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, user.Email));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+            // build claims
+            var claims = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
+            });
+
+            //check if user is doctor to add doctor ID to jwt 
+            if (user.Type == AccountType.Doctor)
+            {
+                var doctorId = _unitOfWork.Doctors.GetDoctorIdFromUserId(user.Id);
+                if (doctorId != null)
+                {
+                    claims.AddClaim(new Claim("DoctorId", doctorId.ToString()));
+                }
+            }
 
             //get roles
             var roles = _userManager.GetRolesAsync(user).Result;
+
             foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                claims.AddClaim(new Claim(ClaimTypes.Role, role));
             }
-            SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Key").Value));
 
-            SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            // create a token descriptor
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Issuer = _configuration.GetSection("JWT:ValidIssuer").Value,
+                Audience = _configuration.GetSection("JWT:ValidAudience").Value,
+                Subject = claims,
+                Expires = DateTime.Now.AddHours(1),
+                SigningCredentials = new SigningCredentials (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
 
-            //create token
-            JwtSecurityToken token = new JwtSecurityToken(
-                issuer: _configuration.GetSection("JWT:ValidIssuer").Value,
-                audience: _configuration.GetSection("JWT:ValidAudience").Value,
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: signingCredentials
-                );
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
             return jwtTokenHandler.WriteToken(token);
         }
+
 
         private static Gender ParseGender(string genderString)
         {

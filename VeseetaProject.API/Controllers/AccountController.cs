@@ -27,12 +27,7 @@ namespace VeseetaProject.API.Controllers
             var result = await _authService.Login(loginDTO);
 
             return result;
-            //if (result.Succeeded)
-            //{
-            //    return Ok(new { Message = "Login successful" });
-            //}
-
-            //return BadRequest(new { Message = "Invalid login attempt", Errors = result.Errors.Select(e => e.Description) });
+            
         }
         [HttpPost("Patient Registeration")]
         public async Task<IActionResult> Register([FromForm] RegisterationDTO registerDTO)
@@ -47,17 +42,6 @@ namespace VeseetaProject.API.Controllers
                 return result;
             }
         }
-        //[HttpPost("Login")]
-        //public async Task<IActionResult> Login([FromForm] LoginDTO loginDTO)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _authService.Registeration(loginDTO);
-        //    }
-        //    else
-        //    {
-        //        return Unauthorized();
-        //    }
-        //}
+       
     }
 }

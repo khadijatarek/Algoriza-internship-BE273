@@ -28,12 +28,10 @@ namespace VeseetaProject.API.Controllers.Admin
             return Ok(await _doctorService.GetAllDoctors());
         }
 
-
-        [HttpGet("Get Doctor By Id")]
-        public async Task<IActionResult> getDoctor([FromRoute] int id)
+        [HttpGet("GetDoctorById")]
+        public async Task<IActionResult> getDoctor(int id)
         {
-            throw new NotImplementedException();
-            //return Ok(await _doctorService.GetDoctorById(id));
+            return await _doctorService.GetDoctorById(id);
         }
 
 
