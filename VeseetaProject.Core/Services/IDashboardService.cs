@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace VeseetaProject.Core.Services
     {
         Task<int> getDoctorsNum();
         Task<int> getPatientsNum();
-        Task<int> getDoctorsNumfromAppUser();
+        Task<IActionResult> getReqestsNum();
+        Task<IActionResult> getTop10Doctors();
+        Task<IActionResult> getTop5Specializations();
     }
 }
