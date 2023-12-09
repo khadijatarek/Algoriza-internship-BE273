@@ -16,7 +16,7 @@ namespace VeseetaProject.Core.Repositories
         IBaseRepository<Booking> Bookings { get; }
         IBaseRepository<Coupon> Coupons { get; }
         IPatientRepository Patients { get; }
-        //IBaseRepository<Time> Times { get; }
+        IBaseRepository<Time> Times { get; }
 
         int Complete();
 

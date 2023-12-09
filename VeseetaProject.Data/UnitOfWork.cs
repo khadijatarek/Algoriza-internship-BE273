@@ -35,7 +35,7 @@ namespace VeseetaProject.Data
             Bookings = new BaseRepository<Booking>(context);
             Coupons = new BaseRepository<Coupon>(context);
             Patients = new PatientRepository(context);
-            //Times = new BaseRepository<Time>(context);
+            Times = new BaseRepository<Time>(context);
         }
 
         public int Complete()
