@@ -54,10 +54,18 @@ namespace VeseetaProject.API.Controllers.Admin
             return BadRequest(result.Errors); // Return the entire result object
         }
 
-        [HttpPut("EditDoctor")]
-        public ActionResult Update(DoctorDetailsDTO doctor)
+        [HttpPut("EditDoctor/{id}")]
+        public async Task<IActionResult> Update([FromForm]DoctorRegisterDTO doctorDT0,int id)
         {
-            throw new NotImplementedException();
+            if (ModelState.IsValid)
+            {
+                var result = await _doctorService.UpdateDoctor(doctorDT0, id);
+                return result;
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
         [HttpDelete("DeleteDoctor")]
         public ActionResult Update(int doctorId)

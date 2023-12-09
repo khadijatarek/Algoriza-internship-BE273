@@ -63,21 +63,50 @@ namespace VeseetaProject.Services
             {
                 return new NotFoundObjectResult($"No doctor with id {id}");
             }
-
-            //throw new NotImplementedException();
-
-            ////var doctor = await _unitOfWork.Doctors.GetById(id);
-            ////DoctorDetailsDTO d = new DoctorDetailsDTO {
-            ////    Email = doctor.User.Email,
-            ////    Image = doctor.User.Image,
-            ////    FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
-            ////    Phone = doctor.User.PhoneNumber,
-            ////    Specialization = doctor.Specialization.NameEn,
-            ////    Gender = doctor.User.Gender
-            ////};
-
-            ////return d;
         }
+
+        public async Task<IActionResult> UpdateDoctor(DoctorRegisterDTO doctorDTO, int doctorId)
+        {
+            var existingDoctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
+            if(existingDoctor != null)
+            {
+                //existingDoctor.User.ImageUrl = doctorDTO.Image
+                existingDoctor.User.FirstName = doctorDTO.FirstName;
+                existingDoctor.User.LastName = doctorDTO.LastName;
+                existingDoctor.User.Email = doctorDTO.Email;
+                existingDoctor.User.PhoneNumber = doctorDTO.Phone;
+                existingDoctor.User.Gender = doctorDTO.Gender;
+                existingDoctor.User.DateOfBirth = doctorDTO.DateOfBirth;
+                existingDoctor.SpecializationId = doctorDTO.SpecializationId;
+
+                _unitOfWork.Doctors.Update(existingDoctor);
+                _unitOfWork.Complete();
+                return new OkObjectResult(new
+                {
+                    Success = true,
+                    Message = "Doctor UpdatedSuccessfully"
+                });
+            }
+            else
+            {
+                // Not found
+                return new NotFoundObjectResult(value: "Doctor Doesn't Exist");
+            }
+        }
+        //public async Task<IActionResult> DeleteDoctor(int doctorId)
+        //{
+        //    var existingDoctor = await _unitOfWork.Doctors.Find(doctor => doctor.DoctorId == doctorId) ;
+        //    if(existingDoctor != null)
+        //    {
+        //        //check if doctor has appointments, then check if he has requests
+        //        //if(existingDoctor.Appointments!=null)
+        //    }
+        //    else
+        //    {
+        //        //not found
+        //        return new NotFoundObjectResult("Doctor doesn't exist");
+        //    }
+        //}
 
 
 
