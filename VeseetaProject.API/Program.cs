@@ -1,7 +1,13 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using System.Text.Json.Serialization;
+using VeseetaProject.Core.Helpers;
 using VeseetaProject.Core.Models;
 using VeseetaProject.Core.Repositories;
 using VeseetaProject.Core.Services;
@@ -42,10 +48,66 @@ namespace VeseetaProject.API
             builder.Services.AddTransient<ITestService, TestService>();
 
 
+            //JWT Configuration 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                  .AddJwtBearer(jwt =>
+                  {
+                      var key = Encoding.ASCII
+                         .GetBytes(builder.Configuration.GetSection("JWT:key").Value);
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+                      jwt.SaveToken = true;
+                      jwt.TokenValidationParameters = new TokenValidationParameters()
+                      {
+                          ValidateIssuerSigningKey = true,
+                          IssuerSigningKey = new SymmetricSecurityKey(key),
+                          ValidateIssuer = false, 
+                          ValidateAudience = false, 
+                          RequireExpirationTime = false,
+                          ValidateLifetime = true
+                      };
+                  });
+
+
+
+
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(swagger =>
+            {
+                swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "Veseeta", Version = "v1" });
+                swagger.SwaggerDoc("V2",new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Veseeta",
+                });
+                swagger.AddSecurityDefinition("Bearer",new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter JWT Bearer token",
+                });
+                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
 
             var app = builder.Build();
 
@@ -60,6 +122,7 @@ namespace VeseetaProject.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
             app.UseStaticFiles();
 
 

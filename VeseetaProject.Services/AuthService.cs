@@ -3,13 +3,17 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using VeseetaProject.Core.DTOs;
+using VeseetaProject.Core.Helpers;
 using VeseetaProject.Core.Models;
 using VeseetaProject.Core.Repositories;
 using VeseetaProject.Core.Services;
@@ -22,14 +26,93 @@ namespace VeseetaProject.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
+
         //private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork)
+        public AuthService(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager, 
+            IUnitOfWork unitOfWork,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
+        public async Task<IActionResult> Registeration(RegisterationDTO userDTO)
+        {
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = userDTO.Email,
+                //ImageUrl = Image,
+                UserName = userDTO.Email,
+                FirstName = userDTO.FirstName,
+                LastName = userDTO.LastName,
+                PhoneNumber = userDTO.Phone,
+                Gender = userDTO.Gender,
+                Type = AccountType.Patient,
+                DateOfBirth = userDTO.DateOfBirth,
+            };
+            var result = await _userManager.CreateAsync(user,userDTO.Password);
+            if(result.Succeeded)
+            {
+                var assignRole = await _userManager.AddToRoleAsync(user, AccountType.Patient.ToString());
+                if(assignRole.Succeeded)
+                {
+                    return new OkObjectResult(result);
+                }
+                else 
+                { 
+                    //check here
+                    return new JsonResult(assignRole);
+                }
+            }
+            return new JsonResult(result);
+        }
+
+
+
+        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        {
+            //first check if the user exists 
+            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+            if(user != null) 
+            {
+                bool checkUserPassword = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+
+                if (!checkUserPassword)
+                {
+                    return new UnauthorizedObjectResult(new {
+                        LoginSuccess = false,
+                        Message="Incorrect Email or Password"
+                        
+                    });
+                }
+                else
+                {
+                    
+
+                    var mytoken = GenerateJWTtoken(user);
+                    return new OkObjectResult(new
+                    {
+                        LoginSuccess = true,
+                        token = mytoken
+                        //Valid to
+                    });
+                }
+            }
+            else
+            {
+                return new UnauthorizedObjectResult("Invalid Login");
+            }
+
+        }
+
+       
+       
+
+
 
         public async Task<IdentityResult> LoginAsync(LoginDTO loginDTO)
         {
@@ -113,7 +196,36 @@ namespace VeseetaProject.Services
             return result; // Return the original result with errors
         }
 
+        private string GenerateJWTtoken(ApplicationUser user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
 
+
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, user.Email));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+            //get roles
+            var roles = _userManager.GetRolesAsync(user).Result;
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Key").Value));
+
+            SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            //create token
+            JwtSecurityToken token = new JwtSecurityToken(
+                issuer: _configuration.GetSection("JWT:ValidIssuer").Value,
+                audience: _configuration.GetSection("JWT:ValidAudience").Value,
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signingCredentials
+                );
+            return jwtTokenHandler.WriteToken(token);
+        }
 
         private static Gender ParseGender(string genderString)
         {
