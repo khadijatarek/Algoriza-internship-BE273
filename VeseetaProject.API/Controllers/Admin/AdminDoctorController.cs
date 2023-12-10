@@ -73,9 +73,9 @@ namespace VeseetaProject.API.Controllers.Admin
             }
         }
         [HttpDelete("DeleteDoctor")]
-        public ActionResult Update(int doctorId)
+        public async Task<IActionResult> Delete(int doctorId)
         {
-            throw new NotImplementedException();
+            return await _doctorService.DeleteDoctor(doctorId);
         }
     }
 }

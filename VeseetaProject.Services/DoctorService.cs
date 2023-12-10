@@ -102,20 +102,49 @@ namespace VeseetaProject.Services
                 return new NotFoundObjectResult(value: "Doctor Doesn't Exist");
             }
         }
-        //public async Task<IActionResult> DeleteDoctor(int doctorId)
-        //{
-        //    var existingDoctor = await _unitOfWork.Doctors.Find(doctor => doctor.DoctorId == doctorId) ;
-        //    if(existingDoctor != null)
-        //    {
-        //        //check if doctor has appointments, then check if he has requests
-        //        //if(existingDoctor.Appointments!=null)
-        //    }
-        //    else
-        //    {
-        //        //not found
-        //        return new NotFoundObjectResult("Doctor doesn't exist");
-        //    }
-        //}
+        public async Task<IActionResult>  DeleteDoctor(int doctorId)
+        {
+            var existingDoctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
+            if (existingDoctor != null)
+            {
+
+                if (existingDoctor.Appointments != null)
+                { 
+                    var appointments = existingDoctor.Appointments;
+                    foreach (Appointment appointment in appointments)
+                    {
+
+                        foreach (Time time in appointment.Times)
+                        {
+                            if (time.isBooked)
+                            {
+                                return new BadRequestObjectResult("Can't Delete Doctor with Bookings(Requests)");
+                            }
+
+                        }
+
+                    }
+                   
+                }
+
+                var userId = existingDoctor.UserId;
+                var image = existingDoctor.User.ImageUrl;
+                _imageService.DeletePhoto(image);
+                _unitOfWork.Doctors.DeleteById(doctorId);
+                _unitOfWork.Users.DeleteById(userId);
+                _unitOfWork.Complete();
+
+                return new OkObjectResult(new
+                {
+                    Success = true,
+                    Message = "Doctor Deleted"
+                });
+            }
+            else
+            {
+                return new NotFoundObjectResult("Doctor doesn't exist");
+            }
+        }
 
 
 

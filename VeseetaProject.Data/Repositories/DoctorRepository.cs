@@ -72,6 +72,7 @@ namespace VeseetaProject.Data.Repositories
 
             return Response;
         }
+       
         public decimal GetAppointmentPrice(int timeId)
         {
             var time = _context.Times

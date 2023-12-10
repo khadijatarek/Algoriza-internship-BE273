@@ -33,8 +33,8 @@ namespace VeseetaProject.API
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                //options.Password.RequiredLength = 8;
-                //options.Password.RequiredUniqueChars = 3;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 3;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
