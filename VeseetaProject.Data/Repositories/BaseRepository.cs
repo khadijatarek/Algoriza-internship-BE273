@@ -9,7 +9,7 @@ using VeseetaProject.Core.Repositories;
 
 namespace VeseetaProject.Data.Repositories
 {
-    public class BaseRepository <T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly ApplicationDbContext _context;
         public BaseRepository(ApplicationDbContext context)
@@ -22,7 +22,7 @@ namespace VeseetaProject.Data.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAll(Expression<Func<T,bool>> criteria, string[]? includes = null)
+        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> criteria, string[]? includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
 
@@ -41,12 +41,12 @@ namespace VeseetaProject.Data.Repositories
         {
             int? startIndex = (pageNo - 1) * pageSize;
             IQueryable<T> query = _context.Set<T>();
-            
+
             if (criteria != null)
             {
                 query = query.Where(criteria);
             }
-            
+
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -68,16 +68,8 @@ namespace VeseetaProject.Data.Repositories
             return await query.ToListAsync();
 
         }
-
-        public async Task<T> Find(Expression<Func<T, bool>> criteria)
-        {
-            var result = await _context.Set<T>().SingleOrDefaultAsync(criteria);
-            if (result != null)
-                return result;
-                
-            return null;
-        }
-
+      
+        
         public async Task<T> GetById(int id)
         {
             var result = await _context.Set<T>().FindAsync(id);
@@ -94,6 +86,17 @@ namespace VeseetaProject.Data.Repositories
 
             return null;
         }
+
+        
+        public async Task<T> Find(Expression<Func<T, bool>> criteria)
+        {
+            var result = await _context.Set<T>().SingleOrDefaultAsync(criteria);
+            if (result != null)
+                return result;
+
+            return null;
+        }
+
 
         public async Task<int> Count(Expression<Func<T, bool>>? criteria)
         {
@@ -117,7 +120,7 @@ namespace VeseetaProject.Data.Repositories
 
         public T Update(T entity)
         {
-           _context.Update(entity);
+            _context.Update(entity);
             return entity;
         }
 
@@ -126,6 +129,7 @@ namespace VeseetaProject.Data.Repositories
             var entity = _context.Set<T>().Find(id);
             _context.Set<T>().Remove(entity);
         }
+
         public void DeleteById(string id)
         {
             var entity = _context.Set<T>().Find(id);

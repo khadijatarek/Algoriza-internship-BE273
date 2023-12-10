@@ -29,16 +29,19 @@ namespace VeseetaProject.API.Controllers.Admin
         {
             return await _dashboardService.getPatientsNum();
         }
+
         [HttpGet("NumOfRequests")]
         public async Task<IActionResult> getNumOfrequests()
         {
             return await _dashboardService.getReqestsNum();
         }
+
         [HttpGet("Top5Specializations")]
         public async Task<IActionResult> Top5Specializations()
         {
             return await _dashboardService.GetTop5Specializations();
         }
+
         [HttpGet("Top10Doctors")]
         public async Task<IActionResult> Top10Doctors()
         {

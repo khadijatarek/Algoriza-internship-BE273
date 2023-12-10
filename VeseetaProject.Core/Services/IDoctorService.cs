@@ -25,8 +25,7 @@ namespace VeseetaProject.Core.Services
         //Doctor
         Task<IActionResult> AddAppointment(int doctorId, AppointmentDTO appointmentDTO);
         
-        Task<IActionResult> ConfirmCheckUpAsync(int doctorId, int bookingId);
-
+       
         Task<IActionResult> UpdateAppointment(int appointmentId, AppointmentDTO updatedAppointmentDTO);
         
         Task<IActionResult> UpdateTime(int timeId, Time updatedTime);
@@ -35,6 +34,7 @@ namespace VeseetaProject.Core.Services
         
         Task<IActionResult> DeleteAppointment(int appointmentId);
 
+        Task<IActionResult> ConfirmCheckUpAsync(int doctorId, int bookingId);
 
 
 

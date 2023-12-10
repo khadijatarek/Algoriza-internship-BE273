@@ -18,6 +18,7 @@ namespace VeseetaProject.API.Controllers.Admin
         {
             _couponService = couponService;
         }
+        
         [HttpPost("Add Coupon")]
         public async Task<IActionResult> AddCoupon([FromForm] CouponDTO couponDTO)
         {
@@ -32,6 +33,7 @@ namespace VeseetaProject.API.Controllers.Admin
                 Coupon = coupon
             });
         }
+
         [HttpPut("UpdateCoupon/{id}")]
         public async Task<IActionResult> UpdateCoupon([FromForm] CouponDTO coupon, int id)
         {

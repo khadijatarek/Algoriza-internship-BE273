@@ -25,10 +25,12 @@ namespace VeseetaProject.Services
         {
             return await _unitOfWork.Doctors.Count(null);
         }
+        
         public async Task<int> getPatientsNum()
         {
             return await _unitOfWork.Users.Count(u=>u.Type==AccountType.Patient);
         }
+        
         public async Task<IActionResult> getReqestsNum()
         {
             var numOfRequests = await _unitOfWork.Bookings.Count(null);
@@ -43,6 +45,8 @@ namespace VeseetaProject.Services
                 numOfPendingRequests = numOfPendingRequests
             });
         }
+        
+        
         public async Task<IActionResult> GetTop5Specializations()
         {
             var topSpecializations = await _unitOfWork.Doctors.GetTop5Specializations();

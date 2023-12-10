@@ -11,6 +11,7 @@ namespace VeseetaProject.Core.Repositories
     {
         Task <IEnumerable<T>> GetAll(Expression<Func<T, bool>>? criteria,  int? pageNo, int? pageSize,string[]? includes= null);
 
+
         Task<T> GetById(int id);
         Task<T> GetById(string id);
 

@@ -31,6 +31,7 @@ namespace VeseetaProject.API.Controllers
             return result;
             
         }
+
         [HttpPost("Patient Registeration")]
         public async Task<IActionResult> Register([FromForm] RegisterationDTO registerDTO)
         {

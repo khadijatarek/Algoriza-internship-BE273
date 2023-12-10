@@ -45,7 +45,7 @@ namespace VeseetaProject.API.Controllers.Patient
                 
                 if (patientIdClaim != null)
                 {
-                    var result = await _bookingService.addBooking(patientId, bookingDTO.TimeId, bookingDTO.Coupon);
+                    var result = await _bookingService.AddBooking(patientId, bookingDTO.TimeId, bookingDTO.Coupon);
                     return result;
                 }
                 else

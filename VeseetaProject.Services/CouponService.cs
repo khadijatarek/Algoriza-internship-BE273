@@ -58,12 +58,12 @@ namespace VeseetaProject.Services
                 });
             }
         }
+        
         public async Task<IActionResult> GetAllCoupons()
         {
             var result = await  _unitOfWork.Coupons.GetAll(null, null, null, null);
             return new OkObjectResult(result);
         }
-
 
         public async Task<IActionResult> UpdateCoupon(CouponDTO couponDTO, int couponID)
         {

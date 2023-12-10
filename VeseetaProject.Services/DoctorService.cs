@@ -26,6 +26,8 @@ namespace VeseetaProject.Services
             _unitOfWork = unitOfWork;
             _imageService = imageService;
         }
+       
+        //Admin
         public async Task<IEnumerable<DoctorDetailsDTO>> GetAllDoctors(int? pageNum = 1, int? pageSize = null)
         {
             var doctors = await _unitOfWork.Doctors.GetAll(null, pageNum, pageSize, new[] { "User", "Specialization" });
@@ -39,6 +41,7 @@ namespace VeseetaProject.Services
                 Gender = d.User.Gender
             });
         }
+        
         public async Task<IActionResult> GetDoctorById(int id)
         {
             var doctor = await _unitOfWork.Doctors.GetDoctorById(id);
@@ -102,6 +105,7 @@ namespace VeseetaProject.Services
                 return new NotFoundObjectResult(value: "Doctor Doesn't Exist");
             }
         }
+        
         public async Task<IActionResult>  DeleteDoctor(int doctorId)
         {
             var existingDoctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
@@ -148,11 +152,7 @@ namespace VeseetaProject.Services
 
 
 
-        //public async Task<IActionResult> GetAllBookings(int doctorId,int? pageNum, int? pageSize, string? search)
-        //{
-        //    var doctor = await _unitOfWork.Doctors.GetById(doctorId);
-
-        //}
+        //Doctor
         public async Task<IActionResult> AddAppointment(int doctorId, AppointmentDTO appointmentDTO)
         {
             var doctor = await _unitOfWork.Doctors.GetById(doctorId);
@@ -200,9 +200,6 @@ namespace VeseetaProject.Services
             }
 
         }
-
-
-
 
         public async Task<IActionResult> UpdateAppointment(int appointmentId, AppointmentDTO updatedAppointmentDTO)
         {

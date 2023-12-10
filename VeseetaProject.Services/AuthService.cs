@@ -28,14 +28,14 @@ namespace VeseetaProject.Services
         private readonly IConfiguration _configuration;
 
 
-        public AuthService(UserManager<ApplicationUser> userManager,
-            IUnitOfWork unitOfWork,
-            IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _configuration = configuration;
         }
+        
+        
         public async Task<IActionResult> Registeration(RegisterationDTO userDTO, string?ImageUrl)
         {
             ApplicationUser user = new ApplicationUser()

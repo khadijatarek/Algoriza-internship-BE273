@@ -24,6 +24,7 @@ namespace VeseetaProject.API.Controllers.Admin
             _doctorService = DoctorService;
             _imageService = imageService;
         }
+
         [HttpGet("Get All Doctors")]
         public async Task<IActionResult> getAllDoctors(int? pageNum, int? pageSize)
         {
@@ -35,7 +36,6 @@ namespace VeseetaProject.API.Controllers.Admin
         {
             return await _doctorService.GetDoctorById(id);
         }
-
 
         [HttpPost("AddDoctor")]
         public async Task<IActionResult> AddDoctor([FromForm] DoctorRegisterDTO registerDTO)
@@ -49,7 +49,6 @@ namespace VeseetaProject.API.Controllers.Admin
                 return Ok(result); // Return Ok without specifying a result object
             }
 
-            // Handle specific errors or return the entire result object
             if (result.Errors.Any(error => error.Code == " error"))
             {
                 return BadRequest("Custom error message for a specific condition");
@@ -72,6 +71,7 @@ namespace VeseetaProject.API.Controllers.Admin
                 return BadRequest();
             }
         }
+
         [HttpDelete("DeleteDoctor")]
         public async Task<IActionResult> Delete(int doctorId)
         {

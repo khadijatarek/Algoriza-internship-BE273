@@ -19,6 +19,7 @@ namespace VeseetaProject.Services
         {
             _unitOfWork = unitOfWork;
         }
+
         public async Task<IEnumerable<PatientDetailsDTO>> GetAllPatients(int? pageNum = 1,int? pageSize=null)
         {
             var patients = await _unitOfWork.Users.GetAll(u => u.Type == Core.Models.AccountType.Patient, pageNum, pageSize, new[] {"Bookings"}); //, page, null);

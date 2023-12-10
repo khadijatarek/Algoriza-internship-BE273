@@ -38,6 +38,8 @@ namespace VeseetaProject.API.Controllers.Doctor
             return result;
         }
 
+
+
         [HttpGet("api/[controller]/Booking/[action]")]
         public async Task<IActionResult> GetAll(int? pageNum, int?PageSize, string? search)
         {
@@ -71,6 +73,7 @@ namespace VeseetaProject.API.Controllers.Doctor
             }
         }
         
+
         [HttpPut("api/[controller]/Appointments/[action]")]
         public async Task<IActionResult> UpdateAppointment(AppointmentDTO appointmentDTO)
         {
@@ -82,6 +85,7 @@ namespace VeseetaProject.API.Controllers.Doctor
             }
             return await _doctorService.UpdateAppointment(doctorId, appointmentDTO);
         }
+
 
         [HttpDelete("api/[controller]/Appointments/[action]/{appointmentId}")]
         public async Task<IActionResult> DeleteAppointment(int appointmentId)
@@ -95,21 +99,7 @@ namespace VeseetaProject.API.Controllers.Doctor
             return await _doctorService.DeleteAppointment(appointmentId);
 
         }
-        [HttpDelete("api/[controller]/Appointments/[action]/{timeId}")]
-        public async Task<IActionResult> DeletTime(int timeId)
-        {
-            var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
-
-            if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
-            {
-                return BadRequest("Invalid or missing DoctorId in the token.");
-            }
-            return await _doctorService.DeleteTime(timeId);
-
-        }
-
-
-
+       
     }
    
 }

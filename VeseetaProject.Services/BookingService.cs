@@ -22,7 +22,9 @@ namespace VeseetaProject.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode)
+
+
+        public async Task<IActionResult> AddBooking(string patientId, int timeId, string? discountCode)
         {
             var time = await _unitOfWork.Times.GetById(timeId);
             if (!time.isBooked)
@@ -83,64 +85,30 @@ namespace VeseetaProject.Services
                 return new BadRequestObjectResult($"Can't book this{timeId}, It's already booked");
             }
         }
-
-        public async Task<IEnumerable<DoctorResponse>> getAvailableAppointments(int? pageNum=1, int? pageSize=null,string? searchBy=null)
-        {
-            var doctorResponses = await _unitOfWork.Doctors.getAllAppointmentsAndDoctorDetails(pageNum,pageSize,searchBy);
-            return doctorResponses;
-
-        }
-
-        public async Task<IActionResult> GetAllDoctorBookings(int doctorId, int? pageNum = 1, int? pageSize = null, string? searchBy = null)
-        {
-            var doctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
-
-            if (doctor == null)
-            {
-                return new NotFoundObjectResult("Doctor Not Found");
-            }
-            else
-            {
-                var doctorBookings = await _unitOfWork.Doctors.GetDoctorBookings(doctorId, pageNum, pageSize, searchBy);
-                if(doctorBookings == null)
-                {
-                    return new OkObjectResult("No bookings yet");
-                }
-                else
-                {
-                    return new OkObjectResult(doctorBookings);
-                }
-            }
-               
-          
-        
-        }
-
-
         public async Task<IActionResult> CancelBooking(int bookingId, string patientId)
         {
             var booking = await _unitOfWork.Bookings.GetById(bookingId);
-            if(booking == null)
+            if (booking == null)
             {
                 return new NotFoundObjectResult($"Booking {bookingId} doesn't exist");
             }
             else
             {
-                if(booking.PatientId != patientId)
+                if (booking.PatientId != patientId)
                 {
                     return new BadRequestObjectResult($"Booking {bookingId} isn't your, you can't cancel booking that isn't yours");
                 }
                 else
                 {
-                    if(booking.Status == BookingStatus.Pending)
+                    if (booking.Status == BookingStatus.Pending)
                     {
                         booking.Status = BookingStatus.Canceled;
                         _unitOfWork.Bookings.Update(booking);
 
-                        var time = await  _unitOfWork.Times.GetById(booking.TimeId);
+                        var time = await _unitOfWork.Times.GetById(booking.TimeId);
                         time.isBooked = false;
                         _unitOfWork.Times.Update(time);
-                        
+
                         _unitOfWork.Complete();
                         return new OkObjectResult(new
                         {
@@ -157,18 +125,52 @@ namespace VeseetaProject.Services
             }
         }
 
+
+        public async Task<IActionResult> GetAllDoctorBookings(int doctorId, int? pageNum = 1, int? pageSize = null, string? searchBy = null)
+        {
+            var doctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
+
+            if (doctor == null)
+            {
+                return new NotFoundObjectResult("Doctor Not Found");
+            }
+            else
+            {
+                var doctorBookings = await _unitOfWork.Doctors.GetDoctorBookings(doctorId, pageNum, pageSize, searchBy);
+                if (doctorBookings == null)
+                {
+                    return new OkObjectResult("No bookings yet");
+                }
+                else
+                {
+                    return new OkObjectResult(doctorBookings);
+                }
+            }
+
+
+
+        }
+
+
+
         public async Task<IActionResult> GetAllPatientBookings(string patientId)
         {
-            var bookings =await _unitOfWork.Bookings.GetAll(b => b.PatientId == patientId, null,null);
-            if(bookings== null)
+            var bookings = await _unitOfWork.Bookings.GetAll(b => b.PatientId == patientId, null, null);
+            if (bookings == null)
             {
                 return new OkObjectResult("No bookings yet");
             }
-           
-           else return new OkObjectResult ( new 
-           { 
-               bookings = await _unitOfWork.Patients.getPatientsBooking(patientId) 
-           });
+
+            else return new OkObjectResult(new
+            {
+                bookings = await _unitOfWork.Patients.getPatientsBooking(patientId)
+            });
+        }
+        public async Task<IEnumerable<DoctorResponse>> getAvailableAppointments(int? pageNum = 1, int? pageSize = null, string? searchBy = null)
+        {
+            var doctorResponses = await _unitOfWork.Doctors.getAllAppointmentsAndDoctorDetails(pageNum, pageSize, searchBy);
+            return doctorResponses;
+
         }
 
 
