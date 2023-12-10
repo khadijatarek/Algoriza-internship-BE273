@@ -30,19 +30,20 @@ namespace VeseetaProject.API.Controllers.Admin
             return await _dashboardService.getPatientsNum();
         }
         [HttpGet("NumOfRequests")]
-        public ActionResult getNumOfrequests()
+        public async Task<IActionResult> getNumOfrequests()
         {
-            throw new NotImplementedException();
+            return await _dashboardService.getReqestsNum();
         }
         [HttpGet("Top5Specializations")]
-        public ActionResult Top5Specializations()
+        public async Task<IActionResult> Top5Specializations()
         {
-            throw new NotImplementedException();
+            return await _dashboardService.GetTop5Specializations();
         }
         [HttpGet("Top10Doctors")]
-        public ActionResult Top10Doctors()
+        public async Task<IActionResult> Top10Doctors()
         {
-            throw new NotImplementedException();
+            return await _dashboardService.GetTop10Doctors();
+
         }
 
     }

@@ -48,10 +48,10 @@ namespace VeseetaProject.Data.Repositories
                 });
             return Response;
         }
-        
+
         public decimal GetAppointmentPrice(int timeId)
         {
-            var time =  _context.Times
+            var time = _context.Times
             .Where(t => t.TimeId == timeId)
             .Include(t => t.Appointment)
                 .ThenInclude(a => a.Doctor)
@@ -63,7 +63,7 @@ namespace VeseetaProject.Data.Repositories
 
         public async Task<bool> DoctorHasAppointmentOnDay(int doctorId, Days day)
         {
-            var doctor = await GetDoctorById(doctorId); 
+            var doctor = await GetDoctorById(doctorId);
             if (doctor != null && doctor.Appointments != null)
             {
                 return doctor.Appointments.Any(appointment => appointment.Day == day);
@@ -85,11 +85,45 @@ namespace VeseetaProject.Data.Repositories
                 .Where(d => d.DoctorId == id)
                 .Include(d => d.User)
                 .Include(d => d.Specialization)
-                .Include(d=>d.Appointments)
-                    .ThenInclude(a=>a.Times)
-                        .ThenInclude(t=>t.Booking)
+                .Include(d => d.Appointments)
+                    .ThenInclude(a => a.Times)
+                        .ThenInclude(t => t.Booking)
                 .FirstOrDefaultAsync();
             return doctor;
         }
+
+        public async Task<IEnumerable<Specialization>> GetTop5Specializations()
+        {
+            var topSpecializations = await _context.Specializations
+                .Include(s => s.Doctors)
+                    .ThenInclude(d => d.Appointments)
+                        .ThenInclude(a => a.Times)
+                .OrderByDescending(s => s.Doctors
+                    .SelectMany(d => d.Appointments)
+                    .SelectMany(a => a.Times)
+                        .Count(t => t.isBooked))
+                .Take(5)
+            .ToListAsync();
+
+
+            return topSpecializations;
+        }
+
+        public async Task<IEnumerable<Doctor>> GetTop10Doctors()
+        {
+            var topDoctors = await _context.Doctors
+                .Include(d=>d.User)
+                .Include(d=>d.Specialization)
+                .Include(d => d.Appointments)
+                    .ThenInclude(a=>a.Times)
+                .OrderByDescending(d => d.Appointments
+                    .SelectMany(a => a.Times)
+                    .Count(t => t.isBooked))
+                .Take(10)
+           .ToListAsync();
+
+            return topDoctors;
+        }
+
     }
 }

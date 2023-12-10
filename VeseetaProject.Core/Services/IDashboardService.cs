@@ -11,8 +11,9 @@ namespace VeseetaProject.Core.Services
     {
         Task<int> getDoctorsNum();
         Task<int> getPatientsNum();
+        
         Task<IActionResult> getReqestsNum();
-        Task<IActionResult> getTop10Doctors();
-        Task<IActionResult> getTop5Specializations();
+        Task<IActionResult> GetTop10Doctors();
+        Task<IActionResult> GetTop5Specializations();
     }
 }

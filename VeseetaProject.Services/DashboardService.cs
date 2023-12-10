@@ -7,6 +7,7 @@ using VeseetaProject.Core.Repositories;
 using VeseetaProject.Core.Services;
 using VeseetaProject.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace VeseetaProject.Services
 {
@@ -30,25 +31,67 @@ namespace VeseetaProject.Services
         public async Task<IActionResult> getReqestsNum()
         {
             var numOfRequests = await _unitOfWork.Bookings.Count(null);
-            var numOfCompletedRequests = await _unitOfWork.Bookings.Count(booking =>booking.Status==BookingStatus.Completed);
+            var numOfCompletedRequests = await _unitOfWork.Bookings.Count(booking => booking.Status == BookingStatus.Completed);
             var numOfCanceledRequests = await _unitOfWork.Bookings.Count(booking => booking.Status == BookingStatus.Canceled);
             var numOfPendingRequests = await _unitOfWork.Bookings.Count(booking => booking.Status == BookingStatus.Pending);
             return new OkObjectResult(new
             {
-                NumOfAllRequests = numOfCompletedRequests,
+                NumOfAllRequests = numOfRequests,
                 NumOfCompletedRequests = numOfCompletedRequests,
                 NumOfCanceledRequests = numOfCanceledRequests,
                 numOfPendingRequests = numOfPendingRequests
             });
         }
+        public async Task<IActionResult> GetTop5Specializations()
+        {
+            var topSpecializations = await _unitOfWork.Doctors.GetTop5Specializations();
 
-        public Task<IActionResult> getTop10Doctors()
-        {
-            throw new NotImplementedException();
+            var result = topSpecializations
+                .Select(s => new SpecializationDto
+                 {
+                     SpecializationName = s.NameEn,
+                     NumOfDoctors = s.Doctors.Count(),
+                     NumBookings = s.Doctors.Sum(d=>d.Appointments.Count(a=>a.Times.Any(t=>t.isBooked)))
+                    
+                 });
+
+            return new OkObjectResult(result);
         }
-        public Task<IActionResult> getTop5Specializations()
+
+
+        public async Task<IActionResult> GetTop10Doctors()
         {
-            throw new NotImplementedException();
+            var topDoctors = await _unitOfWork.Doctors.GetTop10Doctors();
+
+            var result = topDoctors.Select(d => new DoctorInfoDto
+            {
+                Image = d.User?.ImageUrl,
+                FullName = $"{d.User.FirstName} {d.User.LastName}",
+                Specialization = d.Specialization?.NameEn,
+                NumRequests = d.Appointments.Count(a => a.Times.Any(t => t.isBooked))
+            });
+
+            return new OkObjectResult(result);
         }
+
+
+
+
+
+
+    }
+    public class SpecializationDto
+    {
+        public string SpecializationName { get; set; }
+        public int NumOfDoctors { get; set; }
+        public int NumBookings { get; set; }
+    }
+
+    public class DoctorInfoDto
+    {
+        public string Image { get; set; }
+        public string FullName { get; set; }
+        public string Specialization { get; set; }
+        public int NumRequests { get; set; }
     }
 }
