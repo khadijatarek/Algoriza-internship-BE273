@@ -25,9 +25,9 @@ namespace VeseetaProject.API.Controllers.Admin
             _imageService = imageService;
         }
         [HttpGet("Get All Doctors")]
-        public async Task<IActionResult> getAllDoctors()
+        public async Task<IActionResult> getAllDoctors(int? pageNum, int? pageSize)
         {
-            return Ok(await _doctorService.GetAllDoctors());
+            return Ok(await _doctorService.GetAllDoctors(pageNum,pageSize));
         }
 
         [HttpGet("GetDoctorById")]
