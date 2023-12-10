@@ -26,9 +26,9 @@ namespace VeseetaProject.Services
             _unitOfWork = unitOfWork;
             _imageService = imageService;
         }
-        public async Task<IEnumerable<DoctorDetailsDTO>> GetAllDoctors()
+        public async Task<IEnumerable<DoctorDetailsDTO>> GetAllDoctors(int? pageNum = 1, int? pageSize = null)
         {
-            var doctors = await _unitOfWork.Doctors.GetAll(null, null, null, new[] { "User", "Specialization" });
+            var doctors = await _unitOfWork.Doctors.GetAll(null, pageNum, pageSize, new[] { "User", "Specialization" });
             return doctors.Select(d => new DoctorDetailsDTO
             {
                 Image = d.User.ImageUrl,
@@ -112,6 +112,14 @@ namespace VeseetaProject.Services
         //        return new NotFoundObjectResult("Doctor doesn't exist");
         //    }
         //}
+
+
+
+        //public async Task<IActionResult> GetAllBookings(int doctorId,int? pageNum, int? pageSize, string? search)
+        //{
+        //    var doctor = await _unitOfWork.Doctors.GetById(doctorId);
+
+        //}
         public async Task<IActionResult> AddAppointment(int doctorId, AppointmentDTO appointmentDTO)
         {
             var doctor = await _unitOfWork.Doctors.GetById(doctorId);
@@ -160,34 +168,148 @@ namespace VeseetaProject.Services
 
         }
 
-        //public async Task<IActionResult> GetAllBookings(int doctorId,int? pageNum, int? pageSize, string? search)
-        //{
-        //    var doctor = await _unitOfWork.Doctors.GetById(doctorId);
-
-        //}
 
 
 
-        public async Task<Booking> ConfirmCheckUpAsync(/*int doctorId,*/ int bookingId)
+        public async Task<IActionResult> UpdateAppointment(int appointmentId, AppointmentDTO updatedAppointmentDTO)
         {
-            
-            var booking =await _unitOfWork.Bookings.GetById(bookingId);
-
-            if (booking.Status == BookingStatus.Pending)// check on doctor id bardo
+            var existingAppointment = await _unitOfWork.Appointments.GetById(appointmentId);
+            if (existingAppointment == null)
             {
-                booking.Status = BookingStatus.Completed;
-                var result = _unitOfWork.Bookings.Update(booking);
-                _unitOfWork.Complete();
-                return booking;
-                //if (result.Status == BookingStatus.Completed)
-                //{
-                //    return true;
-                //}
-                //else
-                //    return false;
+                return new NotFoundObjectResult("Appointment not found");
             }
-            else
-                return booking;
+
+            // Check if the appointment is booked (pending or completed)
+            if (existingAppointment.Times.Any(time => time.isBooked))
+            {
+                return new BadRequestObjectResult("Cannot update a booked appointment");
+            }
+
+            // Check if the updated times are available
+            foreach (var daySlot in updatedAppointmentDTO.Appointments)
+            {
+                var day = MapStringToDay(daySlot.Day);
+                if (existingAppointment.Times.Any(time =>
+                    time.isBooked &&
+                    daySlot.Times.Contains(time.time)))
+                {
+                    return new BadRequestObjectResult($"Cannot update times for booked slots on {day}");
+                }
+            }
+
+            // Update the appointment
+            existingAppointment.Day = MapStringToDay(updatedAppointmentDTO.Appointments.First().Day);
+            
+
+            _unitOfWork.Complete();
+            return new OkObjectResult(new { Success = true, Message = "Appointment updated successfully" });
+        }
+
+        public async Task<IActionResult> UpdateTime(int timeId, Time updatedTime)
+        {
+            var existingTime = await _unitOfWork.Times.GetById(timeId);
+            if (existingTime == null)
+            {
+                return new NotFoundObjectResult("Time not found");
+            }
+
+            // Check if the time is part of a booked appointment (pending or completed)
+            if (existingTime.isBooked)
+            {
+                return new BadRequestObjectResult("Cannot update a booked time");
+            }
+
+            // Update the time
+            existingTime.time = updatedTime.time;
+            
+            _unitOfWork.Complete();
+            return new OkObjectResult(new { Success = true, Message = "Time updated successfully" });
+        }
+
+        public async Task<IActionResult> DeleteTime(int timeId)
+        {
+            var timeToDelete = await _unitOfWork.Times.GetById(timeId);
+            if (timeToDelete == null)
+            {
+                return new NotFoundObjectResult("Time not found");
+            }
+
+            // Check if the time is part of a booked appointment (pending or completed)
+            if (timeToDelete.isBooked)
+            {
+                return new BadRequestObjectResult("Cannot delete a booked time");
+            }
+
+            // Perform the deletion
+            _unitOfWork.Times.DeleteById(timeId);
+            _unitOfWork.Complete();
+            return new OkObjectResult(new { Success = true, Message = "Time deleted successfully" });
+        }
+
+        public async Task<IActionResult> DeleteAppointment(int appointmentId)
+        {
+            var appointmentToDelete = await _unitOfWork.Appointments.GetById(appointmentId);
+            if (appointmentToDelete == null)
+            {
+                return new NotFoundObjectResult("Appointment not found");
+            }
+
+            // Check if the appointment is booked (pending or completed)
+            if (appointmentToDelete.Times.Any(time => time.isBooked))
+            {
+                return new BadRequestObjectResult("Cannot delete a booked appointment");
+            }
+
+            // Perform the deletion
+            _unitOfWork.Appointments.DeleteById(appointmentId);
+            _unitOfWork.Complete();
+            return new OkObjectResult(new { Success = true, Message = "Appointment deleted successfully" });
+        }
+
+
+        public async Task<IActionResult> ConfirmCheckUpAsync(int doctorId, int bookingId)
+        {
+            var doctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
+
+            if (doctor == null || doctor.Appointments == null)
+            {
+                //appointments are null
+                return new NotFoundObjectResult("Doctor or appointments not found");
+            }
+
+            foreach (var appointment in doctor.Appointments)
+            {
+                if (appointment.Times != null)
+                {
+                    foreach (var time in appointment.Times)
+                    {
+                        if (time.Booking != null && time.Booking.BookingId == bookingId)
+                        {
+                            var booking = time.Booking;
+
+                            if (booking.Status == BookingStatus.Pending)
+                            {
+                                booking.Status = BookingStatus.Completed;
+                                _unitOfWork.Bookings.Update(booking);
+                                _unitOfWork.Complete();
+                                return new OkObjectResult(new
+                                {
+                                    Success = true,
+                                    Message = "Booking Confirmed",
+                                    booking = booking
+                                }); 
+                            }
+                            else
+                            {
+                                return new BadRequestObjectResult("Booking is not in Pending status");
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Handle the case where the booking with the specified ID is not found for the doctor
+            return new NotFoundObjectResult("Booking not found for the specified doctor");
         }
 
         private Days MapStringToDay(string dayString)

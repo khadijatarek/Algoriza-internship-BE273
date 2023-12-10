@@ -19,17 +19,19 @@ namespace VeseetaProject.API.Controllers.Doctor
             _doctorService = doctorService;
         }
 
-        [HttpPost("api/[controller]/Login")]
-        public IActionResult login(string username, string password)
-        {
-            throw new NotImplementedException();
-        }
 
         [HttpPost("api/[controller]/ConfirmCheckup")]
         public async Task<IActionResult> confirmCheckup(int bookingId)
         {
-            var result = await _doctorService.ConfirmCheckUpAsync(bookingId);
-            return Ok(result);
+            var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
+
+            if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
+            {
+                return BadRequest("Invalid or missing DoctorId in the token.");
+            }
+
+            var result = await _doctorService.ConfirmCheckUpAsync(doctorId,bookingId);
+            return result;
         }
 
         [HttpGet("api/[controller]/Booking/[action]")]
@@ -66,15 +68,34 @@ namespace VeseetaProject.API.Controllers.Doctor
         {
             throw new NotImplementedException();
         }
-        
-        [HttpDelete("api/[controller]/Appointments/[action]")]
-        public IActionResult Delete(int doctorId)
+
+        [HttpDelete("api/[controller]/Appointments/[action]/{appointmentId}")]
+        public async Task<IActionResult> DeleteAppointment(int appointmentId)
         {
-            throw new NotImplementedException();
+            var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
+
+            if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
+            {
+                return BadRequest("Invalid or missing DoctorId in the token.");
+            }
+            return await _doctorService.DeleteAppointment(appointmentId);
+
+        }
+        [HttpDelete("api/[controller]/Appointments/[action]/{timeId}")]
+        public async Task<IActionResult> DeleetTime(int timeId)
+        {
+            var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
+
+            if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
+            {
+                return BadRequest("Invalid or missing DoctorId in the token.");
+            }
+            return await _doctorService.DeleteTime(timeId);
+
         }
 
 
-       
+
     }
    
 }

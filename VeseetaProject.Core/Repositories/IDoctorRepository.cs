@@ -9,12 +9,12 @@ using VeseetaProject.Core.Models;
 namespace VeseetaProject.Core.Repositories
 {
     public interface IDoctorRepository :IBaseRepository<Doctor>
-    {
+    {        
+        Task<Doctor> GetDoctorById(int id);
         int GetDoctorIdFromUserId(string userId);
+        
         Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails();
         decimal GetAppointmentPrice(int timeId);
-        //int GetDoctorIdFromBooking(int bookingId);
-        Task<Doctor> GetDoctorById(int id);
 
         Task<bool> DoctorHasAppointmentOnDay(int doctorId, Days day);
     }

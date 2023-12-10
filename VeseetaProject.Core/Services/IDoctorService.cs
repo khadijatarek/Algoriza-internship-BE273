@@ -11,11 +11,24 @@ namespace VeseetaProject.Core.Services
 {
     public interface IDoctorService
     {
-        Task<IEnumerable<DoctorDetailsDTO>> GetAllDoctors();
+        //Admin/Doctor
+        Task<IEnumerable<DoctorDetailsDTO>> GetAllDoctors(int? pageNum = 1, int? pageSize = null);
         Task<IActionResult> GetDoctorById(int id);
+        Task<IActionResult> UpdateDoctor(DoctorRegisterDTO doctorDTO, int doctorId, string ImageUrl);
+        //Delete doctor
+
+        //Doctor
         Task<IActionResult> AddAppointment(int doctorId, AppointmentDTO appointmentDTO);
-        Task<Booking> ConfirmCheckUpAsync(/*int doctorId,*/ int bookingId);
-        Task<IActionResult> UpdateDoctor(DoctorRegisterDTO doctorDTO, int doctorId,string ImageUrl);
+        
+        Task<IActionResult> ConfirmCheckUpAsync(int doctorId, int bookingId);
+
+        Task<IActionResult> UpdateAppointment(int appointmentId, AppointmentDTO updatedAppointmentDTO);
+        Task<IActionResult> UpdateTime(int timeId, Time updatedTime);
+        Task<IActionResult> DeleteTime(int timeId);
+        Task<IActionResult> DeleteAppointment(int appointmentId);
+
+
+
 
     }
 }

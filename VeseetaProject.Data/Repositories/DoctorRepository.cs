@@ -87,6 +87,7 @@ namespace VeseetaProject.Data.Repositories
                 .Include(d => d.Specialization)
                 .Include(d=>d.Appointments)
                     .ThenInclude(a=>a.Times)
+                        .ThenInclude(t=>t.Booking)
                 .FirstOrDefaultAsync();
             return doctor;
         }

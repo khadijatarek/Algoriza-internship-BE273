@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,6 @@ namespace VeseetaProject.Core.Services
     {
         Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId);
         Task<IEnumerable<DoctorResponse>> getAvailableAppointments();
-        Task<Booking> addBooking(string patientId, int timeId,string? discountCode);
+        Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode);
     }
 }

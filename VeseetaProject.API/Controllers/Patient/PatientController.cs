@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using VeseetaProject.Core.DTOs;
 using VeseetaProject.Core.Models;
 using VeseetaProject.Core.Services;
@@ -31,7 +32,7 @@ namespace VeseetaProject.API.Controllers.Patient
             var result = _patientService.GetPatientById(patientId);
             return Ok(result);
         }
-        
+
         [HttpGet("Get All available appointments")]
         //public ActionResult getAllAppointments(int page, int pageSize, string search)
         public async Task<IActionResult> getAllAppointments()
@@ -43,13 +44,78 @@ namespace VeseetaProject.API.Controllers.Patient
             }
             return BadRequest();
         }
+        //[HttpGet("GetAllAvailableAppointments")]
+        //public async Task<IActionResult> GetAllAppointments(int page, int pageSize, string search)
+        //{
+        //    try
+        //    {
+        //        var results = await _bookingService.getAvailableAppointments();
+        //        if (results != null)
+        //        {
+        //            var doctorAppointments = results.Select(appointment =>
+        //            {
+        //                var doctor = appointment.Doctor;
+        //                return new
+        //                {
+        //                    Doctor = new
+        //                    {
+        //                        doctor.User.ImageUrl,
+        //                        FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
+        //                        doctor.User.Email,
+        //                        doctor.User.PhoneNumber,
+        //                        Specialization = doctor.Specialization.Name,
+        //                        doctor.Price,
+        //                        doctor.User.Gender,
+        //                    },
+        //                    Appointments = new List<object>
+        //            {
+        //                new
+        //                {
+        //                    Day = appointment.Day,
+        //                    Times = appointment.Times.Select(time => new { time.TimeId, time.time }).ToList(),
+        //                }
+        //            }
+        //                };
+        //            }).ToList();
+
+        //            return Ok(doctorAppointments);
+        //        }
+
+        //        return BadRequest("No available appointments found.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception or handle it according to your application's requirements
+        //        return StatusCode(500, "An error occurred while processing the request.");
+        //    }
+        //}
+
 
         [HttpPost("Add Booking")]
-        public async Task<IActionResult> AddBooking([FromForm]BookingDTO bookingDTO, string patientId)
+        public async Task<IActionResult> AddBooking([FromForm] BookingDTO bookingDTO)
         {
-            var result =await _bookingService.addBooking(patientId, bookingDTO.TimeId, bookingDTO.Coupon);
-            return Ok(result);
+            if (ModelState.IsValid)
+            {
+                // Get the PatientId claim from the JWT token
+                var patientIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                var patientId = patientIdClaim.Value;
+                
+                if (patientIdClaim != null)
+                {
+                    var result = await _bookingService.addBooking(patientId, bookingDTO.TimeId, bookingDTO.Coupon);
+                    return result;
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            else
+            {
+                return BadRequest("Invalid ModelState");
+            }
         }
+
 
         [HttpGet("getAllUserBookings")]
         public ActionResult getAllBookings(string patientId)

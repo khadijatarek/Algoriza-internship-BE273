@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -21,47 +22,103 @@ namespace VeseetaProject.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<Booking> addBooking(string patientId, int timeId, string? discountCode)
+        //public async Task<Booking> addBooking(string patientId, int timeId, string? discountCode)
+        //{
+        //    var bookingPrice = _unitOfWork.Doctors.GetAppointmentPrice(timeId);
+        //    var booking = new Booking()
+        //    {
+        //        PatientId = patientId,
+        //        TimeId = timeId,
+        //        Status = BookingStatus.Pending,
+        //        Price = bookingPrice,
+
+        //    };
+        //    var time = await _unitOfWork.Times.GetById(timeId);
+        //    time.isBooked = true;
+        //    _unitOfWork.Times.Update(time);
+
+        //    if (!string.IsNullOrEmpty(discountCode))
+        //    {
+        //        var coupon = await _unitOfWork.Coupons
+        //            .Find(c => c.DiscountCode == discountCode);
+        //        if (coupon != null && IsCouponEligible(coupon, patientId))
+        //        {
+        //            booking.Coupon = coupon;
+        //            booking.TotalPrice = GetPriceAfterDiscount(bookingPrice, coupon);
+        //            coupon.IsUsed = true;
+        //            _unitOfWork.Coupons.Update(coupon);
+
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        booking.TotalPrice = bookingPrice;
+        //    }
+        //    booking = await _unitOfWork.Bookings.Add(booking);
+        //    _unitOfWork.Complete();
+        //    return booking;
+        //}
+        public async Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode)
         {
-            //check if the coupon is eligble 
-            //var coupon = await _unitOfWork.Coupons.Find(c => c.DiscountCode == discountCode);
-
-            //var booking = await _unitOfWork.Bookings.Add(new Booking
-            //{
-            //    PatientId = patientId,
-            //    TimeId = timeId,
-            //    Status = BookingStatus.Pending,
-
-            //});
-            ////}
-            ///
-            var bookingPrice = _unitOfWork.Doctors.GetAppointmentPrice(timeId);
-            var booking = new Booking()
+            var time = await _unitOfWork.Times.GetById(timeId);
+            if (!time.isBooked)
             {
-                PatientId = patientId,
-                TimeId = timeId,
-                Status = BookingStatus.Pending,
-                Price = bookingPrice
-            };
-
-            if (!string.IsNullOrEmpty(discountCode))
-            {
-                var coupon = await _unitOfWork.Coupons
-                    .Find(c => c.DiscountCode == discountCode);
-                if (coupon != null) //&& IsCouponEligible(coupon, patientId))
+                var bookingPrice = _unitOfWork.Doctors.GetAppointmentPrice(timeId);
+                var booking = new Booking()
                 {
-                    booking.Coupon = coupon;
-                    booking.TotalPrice = GetPriceAfterDiscount(bookingPrice, coupon);
-                }
+                    PatientId = patientId,
+                    TimeId = timeId,
+                    Status = BookingStatus.Pending,
+                    Price = bookingPrice,
 
+                };
+               
+
+                if (!string.IsNullOrEmpty(discountCode))
+                {
+                    var coupon = await _unitOfWork.Coupons
+                        .Find(c => c.DiscountCode == discountCode);
+                    if (coupon != null)
+                    {
+                        if (IsCouponEligible(coupon, patientId))
+                        {
+                            booking.Coupon = coupon;
+                            booking.TotalPrice = GetPriceAfterDiscount(bookingPrice, coupon);
+                            coupon.IsUsed = true;
+                            _unitOfWork.Coupons.Update(coupon);
+                          }
+                        else
+                        {
+                            return new BadRequestObjectResult("Coupon is not eligible");
+                        }
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("Invalid Discount Code");
+                    }
+
+                }
+                else
+                {
+                    booking.TotalPrice = bookingPrice;
+                }
+                booking = await _unitOfWork.Bookings.Add(booking);
+
+                time.isBooked = true;
+                _unitOfWork.Times.Update(time);
+
+                _unitOfWork.Complete();
+                return new OkObjectResult(new
+                {
+                    Success = true,
+                    booking = booking,
+                });
             }
             else
             {
-                booking.TotalPrice = bookingPrice;
+                return new BadRequestObjectResult($"Can't book this{timeId}, It's already booked");
             }
-            booking = await _unitOfWork.Bookings.Add(booking);
-            _unitOfWork.Complete();
-            return booking;
         }
 
         public async Task<IEnumerable<DoctorResponse>> getAvailableAppointments()
