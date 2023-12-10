@@ -20,9 +20,9 @@ namespace VeseetaProject.API.Controllers.Admin
         }
 
         [HttpGet("Get All Patients")]
-        public async Task<IActionResult> getAllPatients()// int pageSize, int page)
+        public async Task<IActionResult> getAllPatients( int? pageNum, int? pageSize)
         {
-            var result = await _patientService.GetAllPatients();
+            var result = await _patientService.GetAllPatients(pageNum,pageSize);
             
             if(result != null) {
                 return Ok(result);

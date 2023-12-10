@@ -19,9 +19,9 @@ namespace VeseetaProject.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<PatientDetailsDTO>> GetAllPatients()//Expression<Func<Task, bool>> criteria, int pageSize ,int page)
+        public async Task<IEnumerable<PatientDetailsDTO>> GetAllPatients(int? pageNum = 1,int? pageSize=null)
         {
-            var patients = await _unitOfWork.Users.GetAll(u => u.Type == Core.Models.AccountType.Patient, null, null); //, page, null);
+            var patients = await _unitOfWork.Users.GetAll(u => u.Type == Core.Models.AccountType.Patient, pageNum, pageSize, new[] {"Bookings"}); //, page, null);
 
             return patients.Select(p => new PatientDetailsDTO
             {
@@ -29,13 +29,14 @@ namespace VeseetaProject.Services
                 Email = p.Email,
                 FullName = $"{p.FirstName} {p.LastName}",
                 Phone = p.PhoneNumber,
-                Gender = p.Gender
+                Gender = p.Gender,
+                Bookings = p.Bookings
             });
         }
 
         public async Task<PatientDetailsDTO> GetPatientById(string id)
         {
-            var patient = await _unitOfWork.Users.GetById(id);
+            var patient = _unitOfWork.Patients.getPatientById(id);
 
             PatientDetailsDTO patientDetails = new PatientDetailsDTO
             {
@@ -43,7 +44,8 @@ namespace VeseetaProject.Services
                 Email = patient.Email,
                 FullName = $"{patient.FirstName} {patient.LastName}",
                 Phone = patient.PhoneNumber,
-                Gender = patient.Gender
+                Gender = patient.Gender,
+                Bookings = patient.Bookings
             };
             return patientDetails ;
         }

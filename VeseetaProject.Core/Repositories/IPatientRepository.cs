@@ -10,5 +10,6 @@ namespace VeseetaProject.Core.Repositories
     public interface IPatientRepository : IBaseRepository<ApplicationUser>
     {
         int getNumberOfCompletedBookings(string patientId);
+        ApplicationUser getPatientById(string patientId);
     }
 }

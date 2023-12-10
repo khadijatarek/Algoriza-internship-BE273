@@ -31,5 +31,13 @@ namespace VeseetaProject.Data.Repositories
             return count;
                 
         }
+
+        public ApplicationUser getPatientById(string patientId)
+        {
+            var patient = _context.Users
+                .Include(p => p.Bookings)
+                .FirstOrDefault(p => p.Id == patientId);
+            return patient;
+        }
     }
 }
