@@ -24,19 +24,15 @@ namespace VeseetaProject.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
 
-        //private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AuthService(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, 
             IUnitOfWork unitOfWork,
             IConfiguration configuration)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _unitOfWork = unitOfWork;
             _configuration = configuration;
         }
@@ -45,7 +41,6 @@ namespace VeseetaProject.Services
             ApplicationUser user = new ApplicationUser()
             {
                 Email = userDTO.Email,
-                //ImageUrl = Image,
                 UserName = userDTO.Email,
                 FirstName = userDTO.FirstName,
                 LastName = userDTO.LastName,
@@ -74,7 +69,6 @@ namespace VeseetaProject.Services
             }
             return new JsonResult(result);
         }
-
 
 
         public async Task<IActionResult> Login(LoginDTO loginDTO)
@@ -113,54 +107,6 @@ namespace VeseetaProject.Services
 
         }
 
-       
-       
-
-
-
-        public async Task<IdentityResult> LoginAsync(LoginDTO loginDTO)
-        {
-            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user != null)
-            {
-                var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, false, false);
-
-                if (result.Succeeded)
-                {
-                    // Login successful
-                    return IdentityResult.Success;
-                }
-            }
-
-            // Login failed
-            return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt." });
-        }
-
-        public async Task<IdentityResult> RegisterPatientAsync(PatientRegisterDTO patientDTO, AccountType accountType = AccountType.Patient)
-        {
-            var user = new ApplicationUser
-            {
-
-                FirstName = patientDTO.FirstName,
-                LastName = patientDTO.LastName,
-                PhoneNumber = patientDTO.Phone,
-                ImageUrl = patientDTO.Image,
-                Gender = patientDTO.Gender,
-                UserName = patientDTO.Email,
-                Email = patientDTO.Email,
-                Type = accountType,
-                DateOfBirth = patientDTO.DateOfBirth,
-            };
-
-            var result = await _userManager.CreateAsync(user, patientDTO.Password);
-            if (result.Succeeded)
-            {
-                var assignRoleResult = await _userManager.AddToRoleAsync(user, "Patient");
-
-            }
-
-            return result;
-        }
         public async Task<IdentityResult> RegisterDoctorAsync(DoctorRegisterDTO registerDTO, string ImageUrl, AccountType type = AccountType.Doctor)
         {
             var user = new ApplicationUser
@@ -200,49 +146,6 @@ namespace VeseetaProject.Services
             return result; // Return the original result with errors
         }
 
-        //private string GenerateJWTtoken(ApplicationUser user)
-        //{
-        //    var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-
-        //    var claims = new List<Claim>();
-        //    claims.Add(new Claim(ClaimTypes.Name, user.Email));
-        //    claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-        //    claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-        //    //check if user is doctor to add doctor ID ro jwt 
-        //    if (user.Type == AccountType.Doctor)
-        //    {
-        //        var doctorId = _unitOfWork.Doctors.GetDoctorIdFromUserId(user.Id);
-        //        if (doctorId != null)
-        //        {
-        //            claims.Add(new Claim("DoctorId", doctorId.ToString()));
-        //        }
-        //    }
-
-        //    //get roles
-        //    var roles = _userManager.GetRolesAsync(user).Result;
-            
-        //    foreach (var role in roles)
-        //    {
-        //        claims.Add(new Claim(ClaimTypes.Role, role));
-        //    }
-            
-        //    //build key
-        //    SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Key").Value));
-
-        //    SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        //    //create token
-        //    JwtSecurityToken token = new JwtSecurityToken(
-        //        issuer: _configuration.GetSection("JWT:ValidIssuer").Value,
-        //        audience: _configuration.GetSection("JWT:ValidAudience").Value,
-        //        claims: claims,
-        //        expires: DateTime.Now.AddHours(1),
-        //        signingCredentials: signingCredentials
-        //        );
-        //    return jwtTokenHandler.WriteToken(token);
-        //}
 
         private string GenerateJwtToken(ApplicationUser user)
         {
