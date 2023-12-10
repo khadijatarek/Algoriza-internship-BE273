@@ -11,10 +11,14 @@ namespace VeseetaProject.Core.Services
 {
     public interface IBookingService
     {
-        Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId);
+        Task<IActionResult> GetAllDoctorBookings(int doctorId, int? pageNum = 1, int? pageSize = null, string? searchBy = null);
+       
         Task<IActionResult> GetAllPatientBookings(string patientId);
+        
         Task<IEnumerable<DoctorResponse>> getAvailableAppointments(int? pageNum = 1, int? pageSize = null, string? searchBy = null);
+        
         Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode);
+        
         Task<IActionResult> CancelBooking(int bookingId, string patientId);
 
     }

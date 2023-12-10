@@ -22,43 +22,6 @@ namespace VeseetaProject.Services
         {
             _unitOfWork = unitOfWork;
         }
-        //public async Task<Booking> addBooking(string patientId, int timeId, string? discountCode)
-        //{
-        //    var bookingPrice = _unitOfWork.Doctors.GetAppointmentPrice(timeId);
-        //    var booking = new Booking()
-        //    {
-        //        PatientId = patientId,
-        //        TimeId = timeId,
-        //        Status = BookingStatus.Pending,
-        //        Price = bookingPrice,
-
-        //    };
-        //    var time = await _unitOfWork.Times.GetById(timeId);
-        //    time.isBooked = true;
-        //    _unitOfWork.Times.Update(time);
-
-        //    if (!string.IsNullOrEmpty(discountCode))
-        //    {
-        //        var coupon = await _unitOfWork.Coupons
-        //            .Find(c => c.DiscountCode == discountCode);
-        //        if (coupon != null && IsCouponEligible(coupon, patientId))
-        //        {
-        //            booking.Coupon = coupon;
-        //            booking.TotalPrice = GetPriceAfterDiscount(bookingPrice, coupon);
-        //            coupon.IsUsed = true;
-        //            _unitOfWork.Coupons.Update(coupon);
-
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        booking.TotalPrice = bookingPrice;
-        //    }
-        //    booking = await _unitOfWork.Bookings.Add(booking);
-        //    _unitOfWork.Complete();
-        //    return booking;
-        //}
         public async Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode)
         {
             var time = await _unitOfWork.Times.GetById(timeId);
@@ -73,7 +36,7 @@ namespace VeseetaProject.Services
                     Price = bookingPrice,
 
                 };
-               
+
 
                 if (!string.IsNullOrEmpty(discountCode))
                 {
@@ -87,7 +50,7 @@ namespace VeseetaProject.Services
                             booking.TotalPrice = GetPriceAfterDiscount(bookingPrice, coupon);
                             coupon.IsUsed = true;
                             _unitOfWork.Coupons.Update(coupon);
-                          }
+                        }
                         else
                         {
                             return new BadRequestObjectResult("Coupon is not eligible");
@@ -128,12 +91,32 @@ namespace VeseetaProject.Services
 
         }
 
-        public async Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId)
+        public async Task<IActionResult> GetAllDoctorBookings(int doctorId, int? pageNum = 1, int? pageSize = null, string? searchBy = null)
         {
-            return await _unitOfWork.Bookings.GetAll(booking => booking.Time.Appointment.DoctorId == doctorId,
-                null, null, new[] { "Time", "Time.Appointment", "Time.Appointment.Doctor", "Time.Appointment.DoctorId" } );
+            var doctor = await _unitOfWork.Doctors.GetDoctorById(doctorId);
+
+            if (doctor == null)
+            {
+                return new NotFoundObjectResult("Doctor Not Found");
+            }
+            else
+            {
+                var doctorBookings = await _unitOfWork.Doctors.GetDoctorBookings(doctorId, pageNum, pageSize, searchBy);
+                if(doctorBookings == null)
+                {
+                    return new OkObjectResult("No bookings yet");
+                }
+                else
+                {
+                    return new OkObjectResult(doctorBookings);
+                }
+            }
+               
+          
+        
         }
-   
+
+
         public async Task<IActionResult> CancelBooking(int bookingId, string patientId)
         {
             var booking = await _unitOfWork.Bookings.GetById(bookingId);
@@ -185,7 +168,7 @@ namespace VeseetaProject.Services
            else return new OkObjectResult ( new 
            { 
                bookings = await _unitOfWork.Patients.getPatientsBooking(patientId) 
-           } );
+           });
         }
 
 

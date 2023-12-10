@@ -112,9 +112,58 @@ namespace VeseetaProject.Data.Repositories
                 .Include(d => d.Appointments)
                     .ThenInclude(a => a.Times)
                         .ThenInclude(t => t.Booking)
+                            .ThenInclude(b=>b.Patient)
                 .FirstOrDefaultAsync();
             return doctor;
         }
+
+        public async Task<List<DoctorBookingsDTO>> GetDoctorBookings(int doctorId, int? pageNum = 1, int? pageSize = null, string? searchBy = null)
+        {
+            var doctor = await _context.Doctors
+                .Include(d => d.Appointments)
+                    .ThenInclude(a => a.Times)
+                        .ThenInclude(t => t.Booking)
+                            .ThenInclude(b => b.Patient)
+                .FirstOrDefaultAsync(d => d.DoctorId == doctorId);
+
+            if (doctor != null)
+            {
+                var doctorBookings = doctor.Appointments
+                    .SelectMany(a => a.Times.Where(t => t.Booking != null && t.Booking.Time.isBooked)
+                                             .Select(t => t.Booking))
+                    .Select(booking => new DoctorBookingsDTO
+                    {
+                        PatientName = $"{booking.Patient.FirstName} {booking.Patient.LastName}",
+                        PatientImage = booking.Patient.ImageUrl,
+                        Day = booking.Time.Appointment.Day,
+                        Time = booking.Time.time,
+                        Price = booking.Price,
+                        TotalPrice = booking.TotalPrice,
+                        BookingStatus = booking.Status,
+
+                        
+                    })
+                    .ToList();
+
+                if (!string.IsNullOrEmpty(searchBy))
+                {
+                    doctorBookings = doctorBookings
+                        .Where(b => b.PatientName.Contains(searchBy, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                if (pageNum.HasValue && pageSize.HasValue)
+                {
+                    int skip = (pageNum.Value - 1) * pageSize.Value;
+                    doctorBookings = doctorBookings.Skip(skip).Take(pageSize.Value).ToList();
+                }
+
+                return doctorBookings;
+            }
+
+            return null;
+        }
+
 
         public async Task<IEnumerable<Specialization>> GetTop5Specializations()
         {

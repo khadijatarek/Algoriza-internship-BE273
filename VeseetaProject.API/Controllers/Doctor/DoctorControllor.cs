@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using VeseetaProject.Core.DTOs;
 using VeseetaProject.Core.Services;
+using VeseetaProject.Services;
 
 namespace VeseetaProject.API.Controllers.Doctor
 {
@@ -13,10 +14,13 @@ namespace VeseetaProject.API.Controllers.Doctor
     public class DoctorController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
+        private readonly IBookingService _bookingService;
 
-        public DoctorController(IDoctorService doctorService)
+
+        public DoctorController(IDoctorService doctorService, IBookingService bookingService)
         {
             _doctorService = doctorService;
+            _bookingService = bookingService;
         }
 
 
@@ -35,10 +39,14 @@ namespace VeseetaProject.API.Controllers.Doctor
         }
 
         [HttpGet("api/[controller]/Booking/[action]")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int? pageNum, int?PageSize, string? search)
         {
-
-            return Ok(await _doctorService.GetAllDoctors());
+            var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
+            if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
+            {
+                return BadRequest("Invalid or missing DoctorId in the token.");
+            }
+            return await _bookingService.GetAllDoctorBookings(doctorId,pageNum,PageSize,search); ;
         }
 
 
@@ -64,9 +72,15 @@ namespace VeseetaProject.API.Controllers.Doctor
         }
         
         [HttpPut("api/[controller]/Appointments/[action]")]
-        public IActionResult Update(int doctorId,AppointmentDTO appointmentDTO)
+        public async Task<IActionResult> UpdateAppointment(AppointmentDTO appointmentDTO)
         {
-            throw new NotImplementedException();
+            var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
+
+            if (!int.TryParse(doctorIdClaim.Value, out var doctorId))
+            {
+                return BadRequest("Invalid or missing DoctorId in the token.");
+            }
+            return await _doctorService.UpdateAppointment(doctorId, appointmentDTO);
         }
 
         [HttpDelete("api/[controller]/Appointments/[action]/{appointmentId}")]
@@ -82,7 +96,7 @@ namespace VeseetaProject.API.Controllers.Doctor
 
         }
         [HttpDelete("api/[controller]/Appointments/[action]/{timeId}")]
-        public async Task<IActionResult> DeleetTime(int timeId)
+        public async Task<IActionResult> DeletTime(int timeId)
         {
             var doctorIdClaim = HttpContext.User.FindFirst("DoctorId");
 

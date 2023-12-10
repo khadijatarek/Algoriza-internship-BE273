@@ -14,6 +14,7 @@ namespace VeseetaProject.Core.Repositories
         Task<Doctor> GetDoctorById(int id);
         int GetDoctorIdFromUserId(string userId);
 
+        Task<List<DoctorBookingsDTO>> GetDoctorBookings(int doctorId, int? pageNum = 1, int? pageSize = null, string? searchBy = null);
         Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails(int? pageNum = 1, int? pageSize = null, string? searchBy = null);
         decimal GetAppointmentPrice(int timeId);
 
