@@ -22,68 +22,17 @@ namespace VeseetaProject.API.Controllers.Patient
             _patientService = patientService;
             _bookingService = bookingService;
         }
-       
-        
-        
-       
 
-        [HttpGet("Get All available appointments")]
-        //public ActionResult getAllAppointments(int page, int pageSize, string search)
-        public async Task<IActionResult> getAllAppointments()
+        [HttpGet("Get All Appointments and Times")]
+        public async Task<IActionResult> getAllAppointments(int? pageNum, int? pageSize, string? search)
         {
-            var results = await _bookingService.getAvailableAppointments();
+            var results = await _bookingService.getAvailableAppointments(pageNum,pageSize,search);
             if (results != null)
             {
                 return Ok(results);
             }
             return BadRequest();
         }
-        //[HttpGet("GetAllAvailableAppointments")]
-        //public async Task<IActionResult> GetAllAppointments(int page, int pageSize, string search)
-        //{
-        //    try
-        //    {
-        //        var results = await _bookingService.getAvailableAppointments();
-        //        if (results != null)
-        //        {
-        //            var doctorAppointments = results.Select(appointment =>
-        //            {
-        //                var doctor = appointment.Doctor;
-        //                return new
-        //                {
-        //                    Doctor = new
-        //                    {
-        //                        doctor.User.ImageUrl,
-        //                        FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
-        //                        doctor.User.Email,
-        //                        doctor.User.PhoneNumber,
-        //                        Specialization = doctor.Specialization.Name,
-        //                        doctor.Price,
-        //                        doctor.User.Gender,
-        //                    },
-        //                    Appointments = new List<object>
-        //            {
-        //                new
-        //                {
-        //                    Day = appointment.Day,
-        //                    Times = appointment.Times.Select(time => new { time.TimeId, time.time }).ToList(),
-        //                }
-        //            }
-        //                };
-        //            }).ToList();
-
-        //            return Ok(doctorAppointments);
-        //        }
-
-        //        return BadRequest("No available appointments found.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the exception or handle it according to your application's requirements
-        //        return StatusCode(500, "An error occurred while processing the request.");
-        //    }
-        //}
-
 
         [HttpPost("Add Booking")]
         public async Task<IActionResult> AddBooking([FromForm] BookingDTO bookingDTO)
@@ -110,7 +59,6 @@ namespace VeseetaProject.API.Controllers.Patient
             }
         }
 
-
         [HttpGet("getAllUserBookings")]
         public Task<IActionResult> getAllBookings()
         {
@@ -124,7 +72,6 @@ namespace VeseetaProject.API.Controllers.Patient
         [HttpPut("CancelBooking")]
         public Task<IActionResult> CancelUserBooking(int bookingId)
         {
-            // Get the PatientId claim from the JWT token
             var patientIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             var patientId = patientIdClaim.Value;
 

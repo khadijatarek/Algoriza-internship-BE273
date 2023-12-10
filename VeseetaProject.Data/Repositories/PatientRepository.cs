@@ -16,6 +16,14 @@ namespace VeseetaProject.Data.Repositories
         {
         }
 
+        public ApplicationUser getPatientById(string patientId)
+        {
+            var patient = _context.Users
+                .Include(p => p.Bookings)
+                .FirstOrDefault(p => p.Id == patientId);
+            return patient;
+        }
+     
         public int getNumberOfCompletedBookings(string patientId)
         {
             var patient = _context.Users
@@ -33,14 +41,6 @@ namespace VeseetaProject.Data.Repositories
                 
         }
 
-        public ApplicationUser getPatientById(string patientId)
-        {
-            var patient = _context.Users
-                .Include(p => p.Bookings)
-                .FirstOrDefault(p => p.Id == patientId);
-            return patient;
-        }
-
         public async Task<List<PatientBookingsDTO>> getPatientsBooking(string patientId)
         {
             var user = await _context.Users
@@ -49,9 +49,10 @@ namespace VeseetaProject.Data.Repositories
                 .ThenInclude(t => t.Appointment)
                 .ThenInclude(a => a.Doctor)
                 .ThenInclude(d => d.User)
-                .FirstOrDefaultAsync(p=>p.Id == patientId);
+                .FirstOrDefaultAsync(p => p.Id == patientId);
 
-            if (user!=null){
+            if (user != null)
+            {
                 var patientBookings = new List<PatientBookingsDTO>();
                 foreach (var booking in user.Bookings)
                 {
@@ -64,7 +65,7 @@ namespace VeseetaProject.Data.Repositories
                         day = booking.Time.Appointment.Day,
                         time = booking.Time.time,
                         Price = booking.Price,
-                        PriceTotal = booking.TotalPrice, 
+                        PriceTotal = booking.TotalPrice,
                         BookingStatus = booking.Status
                     };
 

@@ -9,10 +9,11 @@ using VeseetaProject.Core.Models;
 namespace VeseetaProject.Core.Repositories
 {
     public interface IPatientRepository : IBaseRepository<ApplicationUser>
-    {
-        int getNumberOfCompletedBookings(string patientId);
+    { 
         ApplicationUser getPatientById(string patientId);
 
+        int getNumberOfCompletedBookings(string patientId);
+       
         Task<List<PatientBookingsDTO>> getPatientsBooking(string patientId);
     }
 }

@@ -121,16 +121,11 @@ namespace VeseetaProject.Services
             }
         }
 
-        public async Task<IEnumerable<DoctorResponse>> getAvailableAppointments()
+        public async Task<IEnumerable<DoctorResponse>> getAvailableAppointments(int? pageNum=1, int? pageSize=null,string? searchBy=null)
         {
-            var doctorResponses = await _unitOfWork.Doctors.getAllAppointmentsAndDoctorDetails();
+            var doctorResponses = await _unitOfWork.Doctors.getAllAppointmentsAndDoctorDetails(pageNum,pageSize,searchBy);
             return doctorResponses;
 
-        }
-
-        public async Task<IEnumerable<Booking>> GetAllPatientBookings(int patientId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId)
@@ -138,38 +133,7 @@ namespace VeseetaProject.Services
             return await _unitOfWork.Bookings.GetAll(booking => booking.Time.Appointment.DoctorId == doctorId,
                 null, null, new[] { "Time", "Time.Appointment", "Time.Appointment.Doctor", "Time.Appointment.DoctorId" } );
         }
-
-
-
-
-        private bool IsCouponEligible(Coupon coupon, string patientId)
-        {
-            var numOfPatientBookings = _unitOfWork.Patients.getNumberOfCompletedBookings(patientId);
-            if(numOfPatientBookings >= coupon.NumOfBookings)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        private decimal GetPriceAfterDiscount(decimal price, Coupon coupon)
-        {
-            decimal totalPrice;
-            if(coupon.Type == DiscountType.Percentage)
-            {
-                totalPrice = price * (1 - coupon.Value / 100);
-            }
-            else
-            {
-                totalPrice = price - coupon.Value;
-            }
-            return totalPrice;
-        }
-
+   
         public async Task<IActionResult> CancelBooking(int bookingId, string patientId)
         {
             var booking = await _unitOfWork.Bookings.GetById(bookingId);
@@ -223,7 +187,33 @@ namespace VeseetaProject.Services
                bookings = await _unitOfWork.Patients.getPatientsBooking(patientId) 
            } );
         }
-      
+
+
+        private decimal GetPriceAfterDiscount(decimal price, Coupon coupon)
+        {
+            decimal totalPrice;
+            if (coupon.Type == DiscountType.Percentage)
+            {
+                totalPrice = price * (1 - coupon.Value / 100);
+            }
+            else
+            {
+                totalPrice = price - coupon.Value;
+            }
+            return totalPrice;
+        }
+        private bool IsCouponEligible(Coupon coupon, string patientId)
+        {
+            var numOfPatientBookings = _unitOfWork.Patients.getNumberOfCompletedBookings(patientId);
+            if (numOfPatientBookings >= coupon.NumOfBookings)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
 }

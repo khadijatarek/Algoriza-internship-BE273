@@ -12,6 +12,7 @@ namespace VeseetaProject.Core.Services
     public interface IPatientService
     {
         Task<IEnumerable<PatientDetailsDTO>> GetAllPatients(int? pageNum = 1, int? pageSize = null);
+        
         Task<PatientDetailsDTO> GetPatientById(string id);
     }
 }

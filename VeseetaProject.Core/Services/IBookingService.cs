@@ -13,7 +13,7 @@ namespace VeseetaProject.Core.Services
     {
         Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId);
         Task<IActionResult> GetAllPatientBookings(string patientId);
-        Task<IEnumerable<DoctorResponse>> getAvailableAppointments();
+        Task<IEnumerable<DoctorResponse>> getAvailableAppointments(int? pageNum = 1, int? pageSize = null, string? searchBy = null);
         Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode);
         Task<IActionResult> CancelBooking(int bookingId, string patientId);
 

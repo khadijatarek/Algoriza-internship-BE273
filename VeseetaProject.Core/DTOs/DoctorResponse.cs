@@ -28,5 +28,6 @@ namespace VeseetaProject.Core.DTOs
     {
         public int Id { get; set; }
         public string Time { get; set; }
+        public bool isBooked { get; set; }
     }
 }

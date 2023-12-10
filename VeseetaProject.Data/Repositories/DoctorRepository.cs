@@ -17,14 +17,36 @@ namespace VeseetaProject.Data.Repositories
         {
         }
 
-        public async Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails()
+        public async Task<IEnumerable<DoctorResponse>> getAllAppointmentsAndDoctorDetails(int? pageNum = 1, int? pageSize = null, string? searchBy = null)
         {
-            var doctors = await _context.Doctors
-            .Include(d => d.User)
-            .Include(d => d.Specialization)
-            .Include(d => d.Appointments)
-                .ThenInclude(d => d.Times)
-            .ToListAsync();
+            var query = _context.Doctors
+                .Include(d => d.User)
+                .Include(d => d.Specialization)
+                .Include(d => d.Appointments)
+                    .ThenInclude(a => a.Times)
+                .AsQueryable();
+
+            // Apply search filter
+            if (!string.IsNullOrEmpty(searchBy))
+            {
+                searchBy = searchBy.ToLowerInvariant(); 
+                query = query.Where(d =>
+                    d.User.FirstName.ToLower().Contains(searchBy) ||
+                    d.User.LastName.ToLower().Contains(searchBy) ||
+                    d.User.Email.ToLower().Contains(searchBy) ||
+                    d.Specialization.NameEn.ToLower().Contains(searchBy) ||
+                    d.Appointments.Any(a =>
+                        a.Times.Any(t => t.time.ToLower().Contains(searchBy) || !t.isBooked)
+                    )
+                );
+            }
+            // Apply paging
+            if (pageNum.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((pageNum.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var doctors = await query.ToListAsync();
 
             var Response = doctors.Select(doctor =>
                 new DoctorResponse
@@ -38,17 +60,18 @@ namespace VeseetaProject.Data.Repositories
                     Gender = doctor.User.Gender.ToString(),
                     Appointments = doctor.Appointments.Select(appointment => new AppointmentResponse
                     {
-                        Day = appointment.Day.ToString(),
+                        Day = appointment.Day.ToString(), 
                         Times = appointment.Times.Select(time => new TimeResponse
                         {
                             Id = time.TimeId,
-                            Time = time.time
+                            Time = time.time,
+                            isBooked = time.isBooked
                         }).ToList()
                     }).ToList()
                 });
+
             return Response;
         }
-
         public decimal GetAppointmentPrice(int timeId)
         {
             var time = _context.Times
