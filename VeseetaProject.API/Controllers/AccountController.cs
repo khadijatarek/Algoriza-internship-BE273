@@ -10,10 +10,12 @@ namespace VeseetaProject.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IImageService _imageService;
 
-        public AccountController(IAuthService authService)
+        public AccountController(IAuthService authService, IImageService imageService)
         {
             _authService = authService;
+            _imageService = imageService;
         }
 
         [HttpPost("Login")]
@@ -38,8 +40,19 @@ namespace VeseetaProject.API.Controllers
             }
             else
             {
-                var result = await _authService.Registeration(registerDTO);
-                return result;
+                if (registerDTO.Image != null)
+                {
+                    var imageUrl = _imageService.SaveImageToFolder(registerDTO.Image, registerDTO.Email);
+                    var result = await _authService.Registeration(registerDTO, imageUrl);
+                    return result;
+                }
+                else
+                {
+                    var result = await _authService.Registeration(registerDTO);
+
+                    return result;
+                }
+                
             }
         }
        

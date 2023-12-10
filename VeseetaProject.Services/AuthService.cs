@@ -40,7 +40,7 @@ namespace VeseetaProject.Services
             _unitOfWork = unitOfWork;
             _configuration = configuration;
         }
-        public async Task<IActionResult> Registeration(RegisterationDTO userDTO)
+        public async Task<IActionResult> Registeration(RegisterationDTO userDTO, string?ImageUrl)
         {
             ApplicationUser user = new ApplicationUser()
             {
@@ -54,6 +54,11 @@ namespace VeseetaProject.Services
                 Type = AccountType.Patient,
                 DateOfBirth = userDTO.DateOfBirth,
             };
+            if (ImageUrl != null)
+            {
+                user.ImageUrl = ImageUrl;
+            }
+
             var result = await _userManager.CreateAsync(user,userDTO.Password);
             if(result.Succeeded)
             {
@@ -64,7 +69,6 @@ namespace VeseetaProject.Services
                 }
                 else 
                 { 
-                    //check here
                     return new JsonResult(assignRole);
                 }
             }
