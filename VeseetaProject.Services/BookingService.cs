@@ -169,6 +169,61 @@ namespace VeseetaProject.Services
             }
             return totalPrice;
         }
+
+        public async Task<IActionResult> CancelBooking(int bookingId, string patientId)
+        {
+            var booking = await _unitOfWork.Bookings.GetById(bookingId);
+            if(booking == null)
+            {
+                return new NotFoundObjectResult($"Booking {bookingId} doesn't exist");
+            }
+            else
+            {
+                if(booking.PatientId != patientId)
+                {
+                    return new BadRequestObjectResult($"Booking {bookingId} isn't your, you can't cancel booking that isn't yours");
+                }
+                else
+                {
+                    if(booking.Status == BookingStatus.Pending)
+                    {
+                        booking.Status = BookingStatus.Canceled;
+                        _unitOfWork.Bookings.Update(booking);
+
+                        var time = await  _unitOfWork.Times.GetById(booking.TimeId);
+                        time.isBooked = false;
+                        _unitOfWork.Times.Update(time);
+                        
+                        _unitOfWork.Complete();
+                        return new OkObjectResult(new
+                        {
+                            Success = true,
+                            Message = "Booking Canceled",
+                            Booking = booking
+                        });
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("You can only cancel pending bookings");
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> GetAllPatientBookings(string patientId)
+        {
+            var bookings =await _unitOfWork.Bookings.GetAll(b => b.PatientId == patientId, null,null);
+            if(bookings== null)
+            {
+                return new OkObjectResult("No bookings yet");
+            }
+           
+           else return new OkObjectResult ( new 
+           { 
+               bookings = await _unitOfWork.Patients.getPatientsBooking(patientId) 
+           } );
+        }
+      
     }
 
 }

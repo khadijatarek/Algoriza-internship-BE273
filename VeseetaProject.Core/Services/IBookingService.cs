@@ -12,7 +12,10 @@ namespace VeseetaProject.Core.Services
     public interface IBookingService
     {
         Task<IEnumerable<Booking>> GetAllDoctorBookings(int doctorId);
+        Task<IActionResult> GetAllPatientBookings(string patientId);
         Task<IEnumerable<DoctorResponse>> getAvailableAppointments();
         Task<IActionResult> addBooking(string patientId, int timeId, string? discountCode);
+        Task<IActionResult> CancelBooking(int bookingId, string patientId);
+
     }
 }

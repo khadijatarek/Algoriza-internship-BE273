@@ -25,13 +25,7 @@ namespace VeseetaProject.API.Controllers.Patient
        
         
         
-        //Not needed here
-        [HttpGet("Get Patient By Id")]
-        public ActionResult getAllPatients(string patientId)
-        {
-            var result = _patientService.GetPatientById(patientId);
-            return Ok(result);
-        }
+       
 
         [HttpGet("Get All available appointments")]
         //public ActionResult getAllAppointments(int page, int pageSize, string search)
@@ -118,15 +112,23 @@ namespace VeseetaProject.API.Controllers.Patient
 
 
         [HttpGet("getAllUserBookings")]
-        public ActionResult getAllBookings(string patientId)
+        public Task<IActionResult> getAllBookings()
         {
-            throw new NotImplementedException();
+            // Get the PatientId claim from the JWT token
+            var patientIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var patientId = patientIdClaim.Value;
+
+            return _bookingService.GetAllPatientBookings(patientId);
         }
 
-        [HttpGet("CancelBooking")]
-        public ActionResult CancelUserBooking(int bookingId)
+        [HttpPut("CancelBooking")]
+        public Task<IActionResult> CancelUserBooking(int bookingId)
         {
-            throw new NotImplementedException();
+            // Get the PatientId claim from the JWT token
+            var patientIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var patientId = patientIdClaim.Value;
+
+            return _bookingService.CancelBooking(bookingId, patientId);  
         }
 
     }
