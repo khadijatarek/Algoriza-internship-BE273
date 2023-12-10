@@ -51,7 +51,8 @@ namespace VeseetaProject.Services
                     FullName = $"{doctor.User.FirstName} {doctor.User.LastName}",
                     Phone = doctor.User.PhoneNumber,
                     Specialization = doctor.Specialization.NameEn,
-                    Gender = doctor.User.Gender
+                    Gender = doctor.User.Gender,
+                   
                 };
                 return new OkObjectResult(new 
                 {
@@ -80,6 +81,9 @@ namespace VeseetaProject.Services
                 existingDoctor.User.Gender = doctorDTO.Gender;
                 existingDoctor.User.DateOfBirth = doctorDTO.DateOfBirth;
                 existingDoctor.SpecializationId = doctorDTO.SpecializationId;
+                existingDoctor.User.UserName = doctorDTO.Email.ToUpper();
+                existingDoctor.User.NormalizedUserName = doctorDTO.Email.ToUpper();
+                existingDoctor.User.NormalizedEmail = doctorDTO.Email.ToUpper();
 
                 _unitOfWork.Doctors.Update(existingDoctor);
                 _unitOfWork.Complete();
