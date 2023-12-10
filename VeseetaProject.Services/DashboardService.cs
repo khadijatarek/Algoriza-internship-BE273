@@ -8,6 +8,7 @@ using VeseetaProject.Core.Services;
 using VeseetaProject.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VeseetaProject.Core.DTOs;
 
 namespace VeseetaProject.Services
 {
@@ -73,25 +74,6 @@ namespace VeseetaProject.Services
 
             return new OkObjectResult(result);
         }
-
-
-
-
-
-
     }
-    public class SpecializationDto
-    {
-        public string SpecializationName { get; set; }
-        public int NumOfDoctors { get; set; }
-        public int NumBookings { get; set; }
-    }
-
-    public class DoctorInfoDto
-    {
-        public string Image { get; set; }
-        public string FullName { get; set; }
-        public string Specialization { get; set; }
-        public int NumRequests { get; set; }
-    }
+  
 }
